@@ -1,0 +1,170 @@
+﻿@model WebApplication1.Models.BaiHoc
+
+@{
+    ViewData["Title"] = "Thêm Bài học mới cho Khóa: " + ViewBag.TenKhoaHoc;
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    .create-lesson-container {
+        max-width: 750px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 10px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .create-lesson-container h2 {
+        text-align: center;
+        margin-bottom: 15px;
+        color: #0056b3;
+        font-weight: 600;
+    }
+    .create-lesson-container .course-subtitle {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #555;
+        font-size: 1.1rem;
+    }
+
+
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-weight: 500; /* Giảm độ đậm */
+        margin-bottom: 8px;
+        color: #333;
+    }
+
+    .form-control, .form-select { /* Áp dụng chung cho input và select */
+        width: 100%;
+        padding: 10px 12px;
+        border-radius: 6px;
+        border: 1px solid #ced4da;
+        box-sizing: border-box;
+        font-size: 0.95rem;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        outline: none;
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .text-danger { /* Class cho thông báo lỗi validation */
+        color: #dc3545;
+        font-size: 0.85rem;
+        margin-top: 4px;
+    }
+
+    .button-group {
+        display: flex;
+        justify-content: flex-start; /* Hoặc space-between */
+        gap: 15px;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+
+    .btn {
+        padding: 10px 25px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: 500;
+        font-size: 1rem;
+        text-decoration: none;
+        text-align: center;
+        transition: opacity 0.2s ease;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+    .btn-primary:hover { opacity: 0.85; }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+     .btn-secondary:hover { opacity: 0.85; }
+
+     .form-control-file { /* Style cho input file */
+        display: block;
+        width: 100%;
+     }
+    .form-control-file::file-selector-button { /* Style cho nút Browse... */
+        padding: .375rem .75rem;
+        margin: .0rem .5rem .0rem 0;
+        font-weight: 400;
+        color: #0d6efd;
+        background-color: #fff;
+        border: 1px solid #0d6efd;
+        border-radius: .25rem;
+        transition: color .15s ease-in-out,background-color .15s ease-in-out,border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+    .form-control-file::file-selector-button:hover {
+        color: #fff;
+        background-color: #0b5ed7;
+        border-color: #0a58ca;
+    }
+
+
+</style>
+
+<div class="create-lesson-container">
+    <h2>Thêm Bài Học Mới</h2>
+    <p class="course-subtitle">Cho khóa học: <strong>@ViewBag.TenKhoaHoc</strong></p>
+    <hr />
+
+    <form asp-action="Create" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="MaKhoaHoc" />
+        <div class="form-group">
+            <label asp-for="TieuDe" class="control-label"></label>
+            <input asp-for="TieuDe" class="form-control" placeholder="Ví dụ: Giới thiệu về Biến và Kiểu dữ liệu" />
+            <span asp-validation-for="TieuDe" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ThuTu" class="control-label"></label>
+            <input asp-for="ThuTu" class="form-control" type="number" min="1" />
+            <span asp-validation-for="ThuTu" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label for="videoFile" class="control-label">Video Bài Học</label>
+            <input type="file" name="videoFile" id="videoFile" class="form-control form-control-file" accept="video/*" />
+            <span asp-validation-for="LinkVideo" class="text-danger"></span>
+        </div>
+        <div class="button-group">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Lưu Bài Học
+            </button>
+            <a asp-controller="BaiHocs" asp-action="Index" asp-route-maKhoaHoc="@Model.MaKhoaHoc" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại Danh sách Bài học
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        // Thêm script nếu cần, ví dụ để preview video, hoặc custom validation
+    </script>
+}

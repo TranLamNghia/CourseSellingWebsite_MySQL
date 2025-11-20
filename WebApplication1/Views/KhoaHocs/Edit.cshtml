@@ -1,0 +1,191 @@
+﻿@model WebApplication1.Models.KhoaHoc
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Chỉnh sửa khóa học";
+}
+
+<style>
+    .edit-container {
+        max-width: 700px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+    }
+
+        .edit-container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #444;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="number"],
+        .form-group input[type="file"],
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .form-group .text-danger {
+            color: red;
+            font-size: 12px;
+        }
+
+    .image-preview {
+        text-align: center;
+        margin-top: 15px;
+        padding: 15px;
+        border: 1px dashed #ccc;
+        border-radius: 8px;
+        background-color: #fff;
+    }
+
+        .image-preview img {
+            max-width: 100%;
+            height: auto;
+            max-height: 250px;
+            border-radius: 6px;
+        }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        margin-top: 30px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+</style>
+<div class="edit-container">
+    <h2>@ViewData["Title"]</h2>
+
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <input type="hidden" asp-for="MaKhoaHoc" />
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="TieuDe"></label>
+                    <input asp-for="TieuDe" class="form-control" />
+                    <span asp-validation-for="TieuDe" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="MonHoc"></label>
+                    <input asp-for="MonHoc" class="form-control" />
+                    <span asp-validation-for="MonHoc" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="MoTa"></label>
+            <textarea asp-for="MoTa" class="form-control"></textarea>
+            <span asp-validation-for="MoTa" class="text-danger"></span>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="GiaKhoaHoc"></label>
+                    <input asp-for="GiaKhoaHoc" type="number" class="form-control" />
+                    <span asp-validation-for="GiaKhoaHoc" class="text-danger"></span>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="ThoiHan"></label>
+                    <input asp-for="ThoiHan" type="number" class="form-control" />
+                    <span asp-validation-for="ThoiHan" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="MaGiaoVien"></label>
+            <select asp-for="MaGiaoVien" class="form-control" asp-items="ViewBag.MaGiaoVien"></select>
+            <span asp-validation-for="MaGiaoVien" class="text-danger"></span>
+        </div>
+
+        <hr />
+
+        <div class="form-group">
+            <label>Ảnh bìa khóa học (nếu muốn đổi)</label>
+            <input type="file" name="AnhKhoaHoc" id="anhKhoaHocInput" class="form-control" accept="image/*" />
+        </div>
+
+        <div class="image-preview">
+            <label>Ảnh bìa hiện tại</label>
+            <img id="imagePreview" src="@(string.IsNullOrEmpty(Model.DuongDanAnhKhoaHoc) ? "/images/placeholder-course.jpg" : Model.DuongDanAnhKhoaHoc)" alt="Ảnh bìa khóa học" />
+        </div>
+
+
+        <div class="button-group">
+            <a asp-action="Index" class="btn btn-secondary">Quay lại danh sách</a>
+            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        // Script xem trước ảnh
+        document.getElementById('anhKhoaHocInput').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('imagePreview').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+}

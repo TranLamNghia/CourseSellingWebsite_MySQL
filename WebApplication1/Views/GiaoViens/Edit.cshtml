@@ -1,0 +1,151 @@
+﻿@model WebApplication1.Models.GiaoVien
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Chỉnh sửa thông tin giáo viên";
+}
+
+<style>
+    .edit-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+    }
+
+        .edit-container h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #333;
+        }
+
+    .form-group {
+        margin-bottom: 18px;
+    }
+
+        .form-group label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+            color: #444;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="email"],
+        .form-group input[type="file"],
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+
+        .form-group textarea {
+            resize: vertical;
+        }
+
+        .form-group span {
+            color: red;
+            font-size: 12px;
+        }
+
+    .image-preview {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+        .image-preview img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 2px solid #ccc;
+        }
+
+    .button-group {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 14px;
+    }
+
+    .btn-primary {
+        background-color: #28a745;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        text-decoration: none;
+        display: inline-block;
+        text-align: center;
+    }
+
+    .btn:hover {
+        opacity: 0.9;
+    }
+</style>
+
+<div class="edit-container">
+    <h2>Chỉnh sửa giáo viên</h2>
+
+    <form asp-action="Edit" enctype="multipart/form-data">
+        <input type="hidden" asp-for="MaGiaoVien" />
+
+        <div class="form-group">
+            <label asp-for="HoTen"></label>
+            <input asp-for="HoTen" type="text" />
+            <span asp-validation-for="HoTen"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Email"></label>
+            <input asp-for="Email" type="email" />
+            <span asp-validation-for="Email"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="DienThoai"></label>
+            <input asp-for="DienThoai" type="text" />
+            <span asp-validation-for="DienThoai"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="GioiThieu"></label>
+            <textarea asp-for="GioiThieu" rows="4"></textarea>
+            <span asp-validation-for="GioiThieu"></span>
+        </div>
+
+        <div class="form-group">
+            <label>Ảnh đại diện mới (nếu muốn đổi)</label>
+            <input type="file" name="AnhDaiDien" />
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.DuongDanAnhDaiDien))
+        {
+            <div class="image-preview">
+                <label>Ảnh hiện tại:</label><br />
+                <img src="@Model.DuongDanAnhDaiDien" alt="Ảnh đại diện" />
+            </div>
+        }
+
+        <div class="button-group">
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+            <button type="submit" class="btn btn-primary">Lưu</button>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,80 @@
+﻿@model WebApplication1.Models.BaiHoc
+
+@{
+    ViewData["Title"] = "Xác nhận Xóa";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .delete-container {
+        max-width: 600px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #fff;
+        border: 1px solid #dc3545; /* Viền đỏ cảnh báo */
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    }
+    .delete-container h2 {
+        color: #dc3545; /* Màu đỏ */
+        text-align: center;
+        margin-bottom: 20px;
+    }
+    .delete-info dt {
+        font-weight: 600;
+        color: #333;
+    }
+    .delete-info dd {
+        margin-left: 0;
+        margin-bottom: 1rem;
+        color: #555;
+    }
+     .button-group { display: flex; gap: 15px; margin-top: 30px; }
+    .btn { padding: 10px 25px; border: none; border-radius: 6px; cursor: pointer; text-decoration: none; text-align: center; }
+    .btn-danger { background-color: #dc3545; color: white; }
+    .btn-secondary { background-color: #6c757d; color: white; }
+</style>
+
+<div class="delete-container">
+    <h2>Bạn có chắc chắn muốn xóa bài học này không?</h2>
+    <p class="text-center text-muted">Hành động này không thể hoàn tác.</p>
+    <hr />
+
+    <dl class="row delete-info">
+        <dt class="col-sm-4">
+            Tiêu đề bài học
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.TieuDe)
+        </dd>
+
+        <dt class="col-sm-4">
+            Thứ tự
+        </dt>
+        <dd class="col-sm-8">
+            @Html.DisplayFor(model => model.ThuTu)
+        </dd>
+
+        <dt class="col-sm-4">
+            Thuộc khóa học
+        </dt>
+        <dd class="col-sm-8">
+            @* Đây là lý do ta cần Include MaKhoaHocNavigation *@
+            @Html.DisplayFor(model => model.MaKhoaHocNavigation.TieuDe)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        @* Input ẩn để gửi MaBaiHoc đi khi form được submit *@
+        <input type="hidden" asp-for="MaBaiHoc" />
+
+        <div class="button-group">
+            <button type="submit" class="btn btn-danger">
+                <i class="fas fa-trash-alt"></i> Vâng, Xóa!
+            </button>
+            <a asp-action="Index" asp-route-maKhoaHoc="@Model.MaKhoaHoc" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Hủy
+            </a>
+        </div>
+    </form>
+</div>

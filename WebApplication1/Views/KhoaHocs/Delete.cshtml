@@ -1,0 +1,171 @@
+﻿@model WebApplication1.Models.KhoaHoc
+
+@{
+    ViewData["Title"] = "Xác nhận Xóa Khóa học";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .delete-container {
+        max-width: 700px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #fff; /* Nền trắng cho sạch sẽ */
+        border: 1px solid #e0e0e0; /* Viền nhẹ */
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        font-family: Arial, sans-serif;
+    }
+
+    .delete-container h1 {
+        text-align: center;
+        margin-bottom: 15px;
+        color: #d9534f; /* Màu đỏ cho tiêu đề xóa */
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+
+    .delete-container h3 {
+        text-align: center;
+        margin-bottom: 25px;
+        color: #555;
+        font-size: 1.1rem;
+        font-weight: normal;
+    }
+
+    .details-list {
+        margin-bottom: 30px;
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+    }
+
+    .detail-item {
+        display: flex;
+        flex-wrap: wrap; /* Cho phép xuống dòng trên màn hình nhỏ */
+        padding: 10px 0;
+        border-bottom: 1px solid #f0f0f0;
+    }
+    .detail-item:last-child {
+        border-bottom: none;
+    }
+
+    .detail-label {
+        flex-basis: 30%; /* Chiều rộng của nhãn */
+        min-width: 150px; /* Chiều rộng tối thiểu cho nhãn */
+        font-weight: bold;
+        color: #333;
+        padding-right: 10px; /* Khoảng cách giữa nhãn và giá trị */
+    }
+
+    .detail-value {
+        flex-basis: 70%; /* Chiều rộng của giá trị */
+        flex-grow: 1; /* Cho phép giá trị chiếm không gian còn lại */
+        color: #555;
+        word-wrap: break-word; /* Để nội dung dài tự xuống dòng */
+    }
+
+    .detail-value img { /* Style cho ảnh nếu có */
+        max-width: 200px; /* Giới hạn chiều rộng ảnh */
+        height: auto;
+        border-radius: 4px;
+        margin-top: 5px;
+    }
+
+    .form-actions {
+        margin-top: 20px;
+        text-align: center; /* Căn giữa các nút */
+    }
+
+    .btn {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        font-size: 1rem;
+        text-decoration: none;
+        margin: 0 5px; /* Khoảng cách giữa các nút */
+        transition: opacity 0.2s ease;
+    }
+
+    .btn-danger {
+        background-color: #d9534f; /* Màu đỏ cho nút Delete */
+        color: white;
+    }
+    .btn-danger:hover {
+        opacity: 0.85;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    .btn-secondary:hover {
+        opacity: 0.85;
+    }
+</style>
+
+<div class="delete-container">
+    <h1>@ViewData["Title"]</h1>
+    <h3>Bạn có chắc chắn muốn xóa khóa học này không?</h3>
+
+    <div class="details-list">
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.MaKhoaHoc)</span>
+            <span class="detail-value">@Html.DisplayFor(model => model.MaKhoaHoc)</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.MonHoc)</span>
+            <span class="detail-value">@Html.DisplayFor(model => model.MonHoc)</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.TieuDe)</span>
+            <span class="detail-value">@Html.DisplayFor(model => model.TieuDe)</span>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.DuongDanAnhKhoaHoc))
+        {
+            <div class="detail-item">
+                <span class="detail-label">@Html.DisplayNameFor(model => model.DuongDanAnhKhoaHoc)</span>
+                <span class="detail-value">
+                    <img src="@Model.DuongDanAnhKhoaHoc" alt="Ảnh khóa học" />
+                </span>
+            </div>
+        }
+
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.MoTa)</span>
+            <span class="detail-value">@Html.DisplayFor(model => model.MoTa)</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.GiaKhoaHoc)</span>
+            <span class="detail-value">@Model.GiaKhoaHoc.ToString("N0")₫</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.ThoiHan)</span>
+            <span class="detail-value">@Html.DisplayFor(model => model.ThoiHan) ngày</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.NgayCapNhat)</span>
+            <span class="detail-value">@Model.NgayCapNhat.ToString("dd/MM/yyyy HH:mm")</span>
+        </div>
+
+        <div class="detail-item">
+            <span class="detail-label">@Html.DisplayNameFor(model => model.MaGiaoVienNavigation)</span>
+            <span class="detail-value">@(Model.MaGiaoVienNavigation != null ? Model.MaGiaoVienNavigation.HoTen : "N/A")</span>
+        </div>
+    </div>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="MaKhoaHoc" />
+        <div class="form-actions">
+            <input type="submit" value="Xóa" class="btn btn-danger" />
+            <a asp-action="Index" class="btn btn-secondary">Hủy & Quay lại</a>
+        </div>
+    </form>
+</div>

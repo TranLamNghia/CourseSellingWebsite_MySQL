@@ -1,0 +1,362 @@
+﻿@using WebApplication1.ViewModel
+@model ChiTietKhoaHocViewModel
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = $"Bài học: {Model.TieuDeKhoaHoc}";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+    /* Copy CSS từ file ViewLessons.cshtml đã được tối ưu (phiên bản không có mô tả) */
+    /* Thêm style cho các nút Sửa/Xóa nếu cần */
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f8f9fa; /* Màu nền sáng hơn cho toàn trang */
+        color: #333;
+        line-height: 1.6;
+    }
+    .lesson-viewer-page-container { /* Thêm container bao ngoài cùng */
+        max-width: 100%;
+        padding: 0; /* Bỏ padding nếu muốn layout toàn màn hình */
+    }
+    .lesson-viewer-header {
+        background-color: #343a40; /* Màu nền tối cho header */
+        color: white;
+        padding: 20px 30px;
+        margin-bottom: 25px;
+        border-bottom: 3px solid #007bff;
+    }
+    .lesson-viewer-header h1 {
+        margin: 0;
+        font-size: 1.8rem;
+        font-weight: 600;
+    }
+    .lesson-viewer-header .breadcrumb-custom { /* Breadcrumb nếu có */
+        font-size: 0.9rem;
+        color: #adb5bd;
+    }
+    .lesson-viewer-header .breadcrumb-custom a {
+        color: #ced4da;
+        text-decoration: none;
+    }
+    .lesson-viewer-header .breadcrumb-custom a:hover {
+        color: #fff;
+    }
+
+
+    .page-main-title { /* Tiêu đề khóa học */
+        font-size: 1.7rem; /* Giảm kích thước tiêu đề chính của khóa học */
+        color: #0056b3;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #dee2e6;
+         /* text-align: center; */ /* Bỏ căn giữa nếu không thích */
+    }
+    .lesson-layout-container {
+        display: flex;
+        gap: 20px; /* Giảm khoảng cách */
+        background-color: #fff; /* Nền trắng cho khu vực chính */
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    }
+    .lesson-sidebar {
+        width: 300px; /* Giảm chiều rộng sidebar */
+        flex-shrink: 0;
+        background-color: #f8f9fa; /* Nền sáng hơn cho sidebar */
+        border: 1px solid #e9ecef;
+        border-radius: 6px;
+        padding: 15px;
+         max-height: calc(100vh - 250px); /* Điều chỉnh chiều cao tối đa */
+        overflow-y: auto;
+    }
+    .lesson-sidebar-title {
+        font-size: 1.2rem;
+        color: #333;
+        margin-top: 0;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #ced4da;
+    }
+    .lesson-sidebar-title .fas {
+        margin-right: 8px;
+        color: #007bff;
+    }
+    .add-lesson-btn-container {
+        margin-bottom: 15px;
+    }
+    .btn-add-lesson { /* Style cho nút thêm bài học */
+        display: block;
+        width: 100%;
+        padding: 10px;
+        background-color: #28a745;
+        color: white;
+        text-align: center;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: 500;
+        transition: background-color 0.2s ease;
+    }
+    .btn-add-lesson:hover {
+        background-color: #218838;
+        color:white;
+    }
+    .btn-add-lesson .fas {
+        margin-right: 5px;
+    }
+
+    .lesson-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+    .lesson-item { /* Thêm class riêng cho thẻ li */
+        margin-bottom: 8px;
+        position: relative; /* Để định vị nút actions */
+    }
+    .lesson-item-link {
+        display: block; /* Cho link chiếm hết li */
+        padding: 10px 12px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.2s ease-in-out;
+        text-decoration: none;
+        color: #212529;
+        font-size: 0.9rem;
+        display: flex; /* Cho các phần tử bên trong căn chỉnh */
+        align-items: center;
+        justify-content: space-between; /* Đẩy actions về cuối */
+    }
+    .lesson-item-link:hover {
+        background-color: #e9ecef;
+        border-color: #ced4da;
+    }
+    .lesson-item-link.active {
+        background-color: #007bff;
+        color: white;
+        border-color: #0056b3;
+        font-weight: 500;
+    }
+    .lesson-item-link.active .lesson-order,
+    .lesson-item-link.active .lesson-actions a {
+         color: white !important; /* Quan trọng để icon có màu trắng */
+    }
+    .lesson-order {
+        font-weight: 500;
+        margin-right: 8px;
+        color: #007bff;
+        min-width: 20px;
+    }
+    .lesson-title-text {
+        flex-grow: 1;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-right: 10px; /* Tạo khoảng cách với nút action */
+    }
+    .lesson-actions {
+        display: flex;
+        align-items: center;
+        gap: 8px; /* Khoảng cách giữa các nút Sửa/Xóa */
+    }
+    .btn-action-lesson {
+        padding: 0.2rem 0.4rem;
+        font-size: 0.8rem; /* Tăng nhẹ font cho icon dễ nhìn */
+        line-height: 1;
+        border: none;
+        border-radius: 4px;
+        text-decoration: none;
+        background: none; /* Bỏ nền mặc định */
+    }
+    .btn-action-lesson .fas {
+        color: #6c757d; /* Màu icon mặc định */
+        transition: color 0.2s ease;
+    }
+    .btn-action-lesson:hover .fas {
+        color: #007bff; /* Màu icon khi hover */
+    }
+    .btn-action-edit:hover .fas { color: #ffc107; }
+    .btn-action-delete:hover .fas { color: #dc3545; }
+
+
+    .lesson-content-area {
+        flex-grow: 1;
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 6px;
+        border: 1px solid #e9ecef;
+    }
+    #currentLessonTitleDisplay {
+        font-size: 1.6rem;
+        color: #343a40;
+        margin-bottom: 15px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    #lessonVideoPlayer {
+        width: 100%;
+        border-radius: 6px;
+        background-color: #000;
+        min-height: 420px;
+        max-height: calc(100vh - 280px);
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+    .no-lesson-selected {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 420px;
+        background-color: #f8f9fa;
+        border-radius: 6px;
+        color: #6c757d;
+        font-size: 1.1rem;
+        border: 2px dashed #dee2e6;
+    }
+
+</style>
+
+<div class="lesson-viewer-page-container">
+    <div class="lesson-viewer-header">
+        <h1>@Model.TieuDeKhoaHoc</h1>
+        @* Có thể thêm breadcrumb ở đây nếu cần *@
+    </div>
+
+    <div style="padding: 0 30px;">
+        @* Thêm padding cho phần dưới header *@
+        <div class="lesson-layout-container">
+            <aside class="lesson-sidebar">
+                <div class="add-lesson-btn-container">
+                    <a asp-controller="BaiHocs" asp-action="Create" asp-route-maKhoaHoc="@Model.MaKhoaHoc" class="btn-add-lesson">
+                        <i class="fas fa-plus"></i> Thêm bài học mới
+                    </a>
+                </div>
+                <h3 class="lesson-sidebar-title"><i class="fas fa-bars"></i> Danh mục bài học</h3>
+                @if (Model.DanhSachBaiHoc != null && Model.DanhSachBaiHoc.Any())
+                {
+                    <ul class="lesson-list">
+                        @foreach (var lesson in Model.DanhSachBaiHoc)
+                        {
+                            <li class="lesson-item">
+                                <a href="#"
+                                   class="lesson-item-link @(lesson.LinkVideo == Model.LinkVideoBanDau && lesson.TieuDe == Model.TieuDeBaiHocBanDau ? "active" : "")"
+                                   data-video-url="@lesson.LinkVideo"
+                                   data-lesson-title="@lesson.TieuDe">
+                                    <span class="lesson-order">@lesson.ThuTu.</span>
+                                    <span class="lesson-title-text">@lesson.TieuDe</span>
+
+                                    <span class="lesson-actions">
+                                        <a asp-controller="BaiHocs" asp-action="Edit" asp-route-id="@lesson.MaBaiHoc" class="btn-action-lesson btn-edit-lesson" title="Sửa bài học">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a asp-controller="BaiHocs" asp-action="Delete" asp-route-id="@lesson.MaBaiHoc" class="btn-action-lesson btn-delete-lesson" title="Xóa bài học">
+                                            <i class="fas fa-trash"></i>
+                                        </a>
+                                    </span>
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p class="text-muted p-2">Khóa học này chưa có bài học nào.</p>
+                }
+            </aside>
+
+            <main class="lesson-content-area">
+                <h2 id="currentLessonTitleDisplay">@(Model.TieuDeBaiHocBanDau ?? "Chọn một bài học để xem")</h2>
+
+                @if (!string.IsNullOrEmpty(Model.LinkVideoBanDau) && Model.LinkVideoBanDau != "#")
+                {
+                    <video id="lessonVideoPlayer" controls controlsList="nodownload">
+                        <source src="@Model.LinkVideoBanDau" type="video/mp4">
+                        Trình duyệt của bạn không hỗ trợ thẻ video.
+                    </video>
+                    <div id="lessonVideoPlayerPlaceholder" class="no-lesson-selected" style="display:none;">
+                        <p>Vui lòng chọn một bài học từ danh sách bên trái để xem video.</p>
+                    </div>
+                }
+                else
+                {
+                    <div id="lessonVideoPlayerPlaceholder" class="no-lesson-selected">
+                        <p>Vui lòng chọn một bài học từ danh sách bên trái để xem video.</p>
+                    </div>
+                    <video id="lessonVideoPlayer" controls controlsList="nodownload" style="display:none;">
+                        <source src="#" type="video/mp4">
+                        Trình duyệt của bạn không hỗ trợ thẻ video.
+                    </video>
+                }
+            </main>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const lessonItems = document.querySelectorAll('.lesson-sidebar .lesson-item-link');
+            const videoPlayer = document.getElementById('lessonVideoPlayer');
+            const videoSource = videoPlayer.querySelector('source');
+            const currentLessonTitleElement = document.getElementById('currentLessonTitleDisplay');
+            const videoPlayerPlaceholder = document.getElementById('lessonVideoPlayerPlaceholder');
+
+            lessonItems.forEach(item => {
+                item.addEventListener('click', function (event) {
+                    // Ngăn chặn hành vi mặc định nếu phần tử được click là icon/button bên trong
+                    if (!event.target.closest('.lesson-actions')) {
+                         event.preventDefault();
+                    } else {
+                        // Nếu click vào nút action (sửa/xóa), không chạy logic đổi video
+                        // và cho phép link điều hướng bình thường
+                        return;
+                    }
+
+
+                    const videoUrl = this.dataset.videoUrl;
+                    const lessonTitle = this.dataset.lessonTitle;
+
+                    currentLessonTitleElement.textContent = lessonTitle || "Không có tiêu đề";
+
+                    if (videoUrl && videoUrl !== "#" && videoUrl.trim() !== "") {
+                        if(videoPlayerPlaceholder) videoPlayerPlaceholder.style.display = 'none';
+                        videoPlayer.style.display = 'block';
+
+                        if (videoSource) {
+                            videoSource.setAttribute('src', videoUrl);
+                        } else {
+                            videoPlayer.src = videoUrl;
+                        }
+                        videoPlayer.load();
+                        // videoPlayer.play(); // Bỏ tự động play nếu không muốn
+                    } else {
+                        videoPlayer.style.display = 'none';
+                        if(videoSource) videoSource.removeAttribute('src');
+                        videoPlayer.load();
+                        if(videoPlayerPlaceholder) videoPlayerPlaceholder.style.display = 'flex';
+                        currentLessonTitleElement.textContent = lessonTitle || "Bài học này không có video";
+                         if (!videoUrl || videoUrl.trim() === "" || videoUrl === "#") {
+                            console.log("URL video không hợp lệ hoặc không có video cho bài này.");
+                        }
+                    }
+
+                    lessonItems.forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Xử lý trạng thái ban đầu
+            const initialVideoUrl = "@Html.Raw(Model.LinkVideoBanDau)";
+            if (!initialVideoUrl || initialVideoUrl === "#") {
+                videoPlayer.style.display = 'none';
+                if(videoPlayerPlaceholder) videoPlayerPlaceholder.style.display = 'flex';
+            } else {
+                 if(videoPlayerPlaceholder) videoPlayerPlaceholder.style.display = 'none';
+                 videoPlayer.style.display = 'block';
+            }
+        });
+    </script>
+}

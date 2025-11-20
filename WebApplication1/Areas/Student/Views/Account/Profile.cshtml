@@ -1,0 +1,564 @@
+﻿@model WebApplication1.Models.HocSinh
+
+@{
+    Layout = "/Areas/Student/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khóa học của tôi - EduLearn</title>
+    <link rel="stylesheet" href="~/css/profile.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<main class="profile-page">
+    <!-- Profile Content -->
+    <section class="profile-content">
+        <div class="container">
+            <div class="profile-container">
+                <!-- Avatar Section -->
+                <div class="avatar-section">
+                    <div class="avatar-card">
+                        <div class="avatar-wrapper">
+                            <img src="@(Model.DuongDanAnhDaiDien ?? "https://placehold.co/200x200")" alt="Avatar" class="avatar-image" id="avatarImage">
+                            <div class="avatar-overlay">
+                                <button type="button" class="change-avatar-btn" id="changeAvatarBtn">
+                                    <i class="fas fa-camera"></i>
+                                    <span>Thay đổi</span>
+                                </button>
+                            </div>
+                        </div>
+                        <input type="file" id="avatarInput" accept="image/*" style="display: none;" name="AvatarFile">
+
+                        <div class="avatar-info">
+                            <h3 id="displayName">@Model.HoTen</h3>
+                            <p class="student-id">ID: <span id="displayStudentId">@Model.MaHocSinh</span></p>
+                            <div class="member-since">
+                                <i class="fas fa-calendar-alt"></i>
+                                <span>Thành viên từ @Model.NgayDangKy</span>
+                            </div>
+                        </div>
+
+                        <div class="avatar-actions">
+                            <button type="button" class="btn btn-outline btn-sm" id="removeAvatarBtn">
+                                <i class="fas fa-trash"></i>
+                                Xóa ảnh
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile Form Section -->
+                <div class="form-section">
+                    <div class="form-card">
+                        <div class="form-header">
+                            <h2>Thông tin chi tiết</h2>
+                            <button type="button" class="btn btn-primary btn-sm" id="editToggleBtn">
+                                <i class="fas fa-edit"></i>
+                                Chỉnh sửa
+                            </button>
+                        </div>
+
+                        <form id="profileForm" class="profile-form" asp-action="Profile" asp-controller="Profile" method="post" enctype="multipart/form-data">
+                            @Html.AntiForgeryToken()
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="studentId">Mã học sinh</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-id-card"></i>
+                                        <input type="text" id="studentId" name="MaHocSinh" value="@Model.MaHocSinh" readonly class="form-control readonly">
+                                    </div>
+                                    <small class="form-text">Mã học sinh không thể thay đổi</small>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="fullName">Họ và tên <span class="required">*</span></label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-user"></i>
+                                        <input type="text" id="fullName" name="HoTen" value="@Model.HoTen" readonly class="form-control" required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="email">Email <span class="required">*</span></label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-envelope"></i>
+                                        <input type="email" id="email" name="Email" value="@Model.Email" readonly class="form-control" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="phone">Số điện thoại</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-phone"></i>
+                                        <input type="tel" id="phone" name="DienThoai" value="@Model.DienThoai" readonly class="form-control">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="birthDate">Ngày sinh</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-birthday-cake"></i>
+                                        <input type="date" id="birthDate" name="NgaySinh" value="@(Model.NgaySinh.HasValue ? Model.NgaySinh.Value.ToString("yyyy-MM-dd") : "")" readonly class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="gender">Giới tính</label>
+                                    <div class="input-wrapper">
+                                        <i class="fas fa-venus-mars"></i>
+                                        <select id="gender" name="GioiTinh" disabled class="form-control">
+                                            <option value="">Chọn giới tính</option>
+                                            <option value="Nam" selected="@(Model.GioiTinh == "Nam")">Nam</option>
+                                            <option value="Nữ" selected="@(Model.GioiTinh == "Nữ")">Nữ</option>
+                                            <option value="Khác" selected="@(Model.GioiTinh == "Khác")">Khác</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="address">Địa chỉ</label>
+                                <div class="input-wrapper">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <textarea id="address" name="DiaChi" readonly class="form-control" rows="3" placeholder="Nhập địa chỉ của bạn">@Model.DiaChi</textarea>
+                                </div>
+                            </div>
+
+                            <!-- Hidden input for avatar path -->
+                            <input type="hidden" id="avatarPath" name="DuongDanAnhDaiDien" value="@Model.DuongDanAnhDaiDien">
+
+                            <div class="form-actions" id="formActions" style="display: none;">
+                                <button type="button" class="btn btn-outline" id="cancelBtn">
+                                    <i class="fas fa-times"></i>
+                                    Hủy
+                                </button>
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-save"></i>
+                                    Lưu thay đổi
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Additional Info Cards
+                    <div class="info-cards">
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="fas fa-book-open"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4>5</h4>
+                                <p>Khóa học đang học</p>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4>3</h4>
+                                <p>Chứng chỉ đạt được</p>
+                            </div>
+                        </div>
+
+                        <div class="info-card">
+                            <div class="info-icon">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4>24h</h4>
+                                <p>Tổng thời gian học</p>
+                            </div>
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Change Password Modal -->
+    <div class="modal" id="changePasswordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Đổi mật khẩu</h3>
+                <button type="button" class="modal-close" id="closePasswordModal">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="changePasswordForm" class="modal-body">
+                <div class="form-group">
+                    <label for="currentPassword">Mật khẩu hiện tại</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="currentPassword" class="form-control" required>
+                        <button type="button" class="password-toggle">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="newPassword">Mật khẩu mới</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="newPassword" class="form-control" required>
+                        <button type="button" class="password-toggle">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <small class="form-text">Mật khẩu phải có ít nhất 8 ký tự</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Xác nhận mật khẩu mới</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="confirmPassword" class="form-control" required>
+                        <button type="button" class="password-toggle">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-outline" id="cancelPasswordBtn">Hủy</button>
+                    <button type="submit" class="btn btn-primary">Đổi mật khẩu</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Security Section -->
+    <section class="security-section">
+        <div class="container">
+            <div class="security-card">
+                <div class="security-header">
+                    <div class="security-title">
+                        <i class="fas fa-shield-alt"></i>
+                        <h3>Bảo mật tài khoản</h3>
+                    </div>
+                </div>
+
+                <div class="security-items">
+                    <div class="security-item">
+                        <div class="security-info">
+                            <h4>Mật khẩu</h4>
+                            <p>Cập nhật lần cuối: 15/01/2024</p> <!-- Có thể lấy từ CSDL -->
+                        </div>
+                        <button type="button" class="btn btn-outline btn-sm" id="changePasswordBtn">
+                            <i class="fas fa-key"></i>
+                            Đổi mật khẩu
+                        </button>
+                    </div>
+
+                    <div class="security-item">
+                        <div class="security-info">
+                            <h4>Xác thực 2 bước</h4>
+                            <p>Tăng cường bảo mật cho tài khoản</p>
+                        </div>
+                        <button type="button" class="btn btn-outline btn-sm">
+                            <i class="fas fa-mobile-alt"></i>
+                            Kích hoạt
+                        </button>
+                    </div>
+
+                    <div class="security-item">
+                        <div class="security-info">
+                            <h4>Phiên đăng nhập</h4>
+                            <p>Quản lý các thiết bị đã đăng nhập</p>
+                        </div>
+                        <button type="button" class="btn btn-outline btn-sm">
+                            <i class="fas fa-devices"></i>
+                            Xem chi tiết
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Elements
+        const editToggleBtn = document.getElementById('editToggleBtn');
+        const profileForm = document.getElementById('profileForm');
+        const formActions = document.getElementById('formActions');
+        const cancelBtn = document.getElementById('cancelBtn');
+        const changeAvatarBtn = document.getElementById('changeAvatarBtn');
+        const avatarInput = document.getElementById('avatarInput');
+        const avatarImage = document.getElementById('avatarImage');
+        const removeAvatarBtn = document.getElementById('removeAvatarBtn');
+        const changePasswordBtn = document.getElementById('changePasswordBtn');
+        const changePasswordModal = document.getElementById('changePasswordModal');
+        const closePasswordModal = document.getElementById('closePasswordModal');
+        const cancelPasswordBtn = document.getElementById('cancelPasswordBtn');
+
+        let isEditing = false;
+        let originalFormData = {};
+
+        // Store original form data
+        function storeOriginalData() {
+            const formData = new FormData(profileForm);
+            originalFormData = {};
+            for (let [key, value] of formData.entries()) {
+                originalFormData[key] = value;
+            }
+        }
+
+        // Restore original form data
+        function restoreOriginalData() {
+            Object.keys(originalFormData).forEach(key => {
+                const element = profileForm.querySelector(`[name="${key}"]`);
+                if (element) {
+                    element.value = originalFormData[key];
+                }
+            });
+            avatarImage.src = originalFormData['DuongDanAnhDaiDien'] || 'https://placehold.co/200x200';
+        }
+
+        // Toggle edit mode
+        function toggleEditMode() {
+            isEditing = !isEditing;
+            const formInputs = profileForm.querySelectorAll('input:not(.readonly), select, textarea');
+
+            if (isEditing) {
+                storeOriginalData();
+                editToggleBtn.innerHTML = '<i class="fas fa-times"></i> Hủy';
+                editToggleBtn.classList.remove('btn-primary');
+                editToggleBtn.classList.add('btn-outline');
+                formActions.style.display = 'flex';
+
+                formInputs.forEach(input => {
+                    input.removeAttribute('readonly');
+                    input.removeAttribute('disabled');
+                    input.classList.remove('readonly');
+                });
+            } else {
+                editToggleBtn.innerHTML = '<i class="fas fa-edit"></i> Chỉnh sửa';
+                editToggleBtn.classList.remove('btn-outline');
+                editToggleBtn.classList.add('btn-primary');
+                formActions.style.display = 'none';
+
+                formInputs.forEach(input => {
+                    if (!input.classList.contains('readonly')) {
+                        input.setAttribute('readonly', 'readonly');
+                    }
+                    if (input.tagName === 'SELECT') {
+                        input.setAttribute('disabled', 'disabled');
+                    }
+                });
+            }
+        }
+
+        // Event listeners
+        editToggleBtn.addEventListener('click', toggleEditMode);
+
+        cancelBtn.addEventListener('click', function() {
+            restoreOriginalData();
+            toggleEditMode();
+        });
+
+        // Avatar upload
+        changeAvatarBtn.addEventListener('click', function() {
+            avatarInput.click();
+        });
+
+        avatarInput.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                if (file.size > 5 * 1024 * 1024) { // 5MB limit
+                    alert('Kích thước file không được vượt quá 5MB');
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    avatarImage.src = e.target.result;
+                    // Here you would typically upload the file to server
+                    console.log('Avatar changed:', file.name);
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        removeAvatarBtn.addEventListener('click', function() {
+            if (confirm('Bạn có chắc chắn muốn xóa ảnh đại diện?')) {
+                avatarImage.src = 'https://placehold.co/200x200';
+                avatarInput.value = '';
+                document.getElementById('avatarPath').value = null;
+                console.log('Avatar removed');
+            }
+        });
+
+        // Form submission
+            profileForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        // Validate form
+        const requiredFields = profileForm.querySelectorAll('[required]');
+        let isValid = true;
+
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isValid = false;
+                field.classList.add('error');
+            } else {
+                field.classList.remove('error');
+            }
+        });
+
+        if (!isValid) {
+            alert('Vui lòng điền đầy đủ thông tin bắt buộc');
+            return;
+        }
+
+        // Handle avatar upload
+        const avatarFile = avatarInput.files[0];
+        const formData = new FormData(profileForm);
+        if (avatarFile) {
+            formData.append('AvatarFile', avatarFile);
+        }
+
+        // Đảm bảo các trường được gửi đúng
+        formData.set('NgaySinh', document.getElementById('birthDate').value); // Đảm bảo định dạng yyyy-MM-dd
+        formData.set('GioiTinh', document.getElementById('gender').value); // Đảm bảo giá trị hợp lệ
+
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang lưu...';
+        submitBtn.disabled = true;
+
+        fetch('/student/profile', {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'RequestVerificationToken': document.querySelector('input[name="__RequestVerificationToken"]').value
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Lỗi khi lưu thông tin');
+            }
+            return response.json();
+        })
+        .then(data => {
+            alert(data.message);
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+            toggleEditMode();
+
+            document.getElementById('displayName').textContent = data.hoTen;
+            document.getElementById('displayStudentId').textContent = data.maHocSinh;
+        })
+        .catch(error => {
+            alert('Có lỗi xảy ra: ' + error.message);
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+    });
+
+        // Password modal
+        changePasswordBtn.addEventListener('click', function() {
+            changePasswordModal.style.display = 'flex';
+        });
+
+        closePasswordModal.addEventListener('click', function() {
+            changePasswordModal.style.display = 'none';
+        });
+
+        cancelPasswordBtn.addEventListener('click', function() {
+            changePasswordModal.style.display = 'none';
+        });
+
+        // Close modal when clicking outside
+        changePasswordModal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                this.style.display = 'none';
+            }
+        });
+
+        // Password toggle functionality
+        document.querySelectorAll('.password-toggle').forEach(toggle => {
+            toggle.addEventListener('click', function() {
+                const input = this.parentElement.querySelector('input');
+                const icon = this.querySelector('i');
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    input.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        });
+
+        // Change password form
+        document.getElementById('changePasswordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            if (newPassword !== confirmPassword) {
+                alert('Mật khẩu xác nhận không khớp');
+                return;
+            }
+
+            if (newPassword.length < 8) {
+                alert('Mật khẩu phải có ít nhất 8 ký tự');
+                return;
+            }
+
+            // Simulate password change
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang xử lý...';
+            submitBtn.disabled = true;
+
+            fetch('/student/change-password', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    currentPassword: currentPassword,
+                    newPassword: newPassword
+                })
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Lỗi khi đổi mật khẩu');
+            })
+            .then(data => {
+                alert('Đổi mật khẩu thành công!');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                changePasswordModal.style.display = 'none';
+                this.reset();
+            })
+            .catch(error => {
+                alert('Có lỗi xảy ra: ' + error.message);
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+
+        // Initialize form state
+        storeOriginalData();
+    });
+</script>

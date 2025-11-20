@@ -1,0 +1,142 @@
+﻿@{
+    Layout = "/Areas/Student/Views/Shared/_Layout.cshtml";
+}
+<main>
+    <!-- Courses Section -->
+    <section class="courses-section">
+        <div class="container">
+            <div class="courses-layout">
+                <!-- Filters Sidebar -->
+                <aside class="filters-sidebar">
+                    <div class="filter-group">
+                        <h3>Tìm Kiếm</h3>
+                        <div class="search-input">
+                            <i class="fas fa-search"></i>
+                            <input type="search" placeholder="Tìm kiếm khóa học...">
+                        </div>
+                    </div>
+
+                    <div class="filter-group">
+
+                        <h3>Môn Học</h3>
+                        <div class="checkbox-list">
+                            @foreach (var subject in Model.Subjects)
+                            {
+                                <div class="checkbox-item">
+                                    <input type="checkbox" id="@subject.Subject">
+                                    <label for="@subject.Subject">@subject.Subject  (@subject.Count)</label>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <!--<div class="filter-group">
+                        <h3>Khoảng Giá</h3>
+                        <div class="price-slider">
+                            <input type="range" min="0" max="2000000" value="1000000" class="slider" id="priceRange">
+                            <div class="price-range-labels">
+                                <span>0đ</span>
+                                <span>2.000.000đ+</span>
+                            </div>
+                        </div>
+                    </div>-->
+
+                    <button class="btn btn-primary btn-block">Áp Dụng Bộ Lọc</button>
+                </aside>
+
+                <!-- Course Listings -->
+                <div class="course-listings">
+                    <div class="listings-header">
+                        <div class="results-count">
+                            @* Hiển thị <span>1-12</span> trong <span>156</span> khóa học *@
+                        </div>
+                        <div class="sort-options">
+                            <select class="sort-select">
+                                <option value="recommended">Được đề xuất</option>
+                                <option value="newest">Mới nhất</option>
+                                <option value="popular">Phổ biến nhất</option>
+                                <option value="price-low">Giá: Thấp đến Cao</option>
+                                <option value="price-high">Giá: Cao đến Thấp</option>
+                            </select>
+                            <button class="filter-button">
+                                <i class="fas fa-filter"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="course-grid">
+                        @foreach (var course in Model.FeaturedCourses)
+                        {
+                            <a href="" class="course-card" data-title="@course.TieuDe" data-id="@course.MaKhoaHoc">
+                                <div class="course-image">
+                                    <img src="@course.DuongDanAnhKhoaHoc" alt="@course.TieuDe">
+                                    <span class="badge">@course.MonHoc</span>
+                                </div>
+                                <div class="course-content">
+                                    <h3>@course.TieuDe</h3>
+                                    <p>@course.MoTa</p>
+                                    <div class="course-meta">
+                                        <div class="meta-item">
+                                            <i class="fas fa-clock"></i>
+                                            <span>@course.ThoiHan ngày</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-book-open"></i>
+                                            <span>50 bài học</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-users"></i>
+                                            <span>0+ học viên</span> <!-- Có thể cần bảng thống kê học viên -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="course-footer">
+                                    <div class="course-rating">
+                                        <div class="stars">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star-half-alt"></i>
+                                        </div>
+                                        <span>(0)</span> <!-- Có thể cần bảng đánh giá -->
+                                    </div>
+                                    <div class="course-price">@course.GiaKhoaHoc.ToString("N0")₫</div>
+                                </div>
+                            </a>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const searchInput = document.querySelector('.search-input input[type="search"]');
+        const courseCards = document.querySelectorAll('.course-card');
+
+        searchInput.addEventListener('input', function () {
+            const searchTerm = this.value.trim().toLowerCase();
+
+            courseCards.forEach(card => {
+                const title = card.getAttribute('data-title').toLowerCase();
+                if (searchTerm === '' || title.includes(searchTerm)) {
+                    card.style.display = 'block'; // Hiển thị nếu khớp
+                } else {
+                    card.style.display = 'none'; // Ẩn nếu không khớp
+                }
+            });
+        });
+    });
+
+    const courseCards = document.querySelectorAll('.course-card');
+    courseCards.forEach(card => {
+        card.addEventListener('click', function (e) {
+            e.preventDefault();
+            const courseId = card.getAttribute('data-id');
+            window.location.href = `/student/coursedetail/${courseId}`;
+        });
+    });
+</script>

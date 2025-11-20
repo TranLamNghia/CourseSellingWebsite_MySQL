@@ -1,0 +1,81 @@
+﻿@{
+    Layout = "/Areas/Student/Views/Shared/_Layout.cshtml"; // Chỉ định đường dẫn tuyệt đối đến layout ngoài khu vực
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khóa học của tôi - EduLearn</title>
+    <link rel="stylesheet" href="~/css/my-learning.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<main class="my-learning-page">
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <div class="page-header-content">
+                <h1>Khóa học của tôi</h1>
+                <p>Tiếp tục hành trình học tập và theo dõi tiến độ của bạn</p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- My Courses -->
+    <section class="my-courses">
+        <div class="container">
+            <div class="courses-grid">
+                @foreach (var course in Model.FeaturedCourses)
+                {
+                    <div class="my-course-card" data-status="in-progress" >
+                        <div class="course-thumbnail">
+                            <img src="@course.DuongDanAnhKhoaHoc" alt="">
+                        </div>
+                        <div class="course-info">
+                            <div class="course-category">@course.MonHoc</div>
+                            <h3>@course.TieuDe</h3>
+                            <div class="course-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>@course.ThoiHan Ngày</span>
+                                </div>
+                            </div>
+                            <div class="course-actions" data-id="@course.MaKhoaHoc">
+                                <a class="btn btn-primary">
+                                    <i class="fas fa-play"></i>
+                                    Tiếp tục học
+                                </a>
+                                <!--<button class="btn btn-outline">
+                                    <i class="fas fa-download"></i>
+                                    Tài liệu
+                                </button>-->
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Load More -->
+            <div class="load-more">
+                <button class="btn btn-outline" onclick="window.location.href='/student/coursepage'">
+                    <i class="fas fa-plus"></i>
+                    Xem thêm khóa học
+                </button>
+            </div>
+        </div>
+    </section>
+
+</main>
+
+<script>
+    const courseCards = document.querySelectorAll('.course-actions');
+    courseCards.forEach(card => {
+        card.addEventListener('click', function (e) {
+            e.preventDefault();
+            const courseId = card.getAttribute('data-id');
+            window.location.href = `/student/lessonplayer/${courseId}`;
+        });
+    });
+</script>

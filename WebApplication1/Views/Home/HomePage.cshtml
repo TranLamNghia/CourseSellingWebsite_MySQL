@@ -1,0 +1,199 @@
+﻿<main>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <span class="badge">Hệ thống khóa học EduLearn</span>
+                    <h1>Bứt phá tri thức<br>Đón đầu tương lai</h1>
+                    <p>EduLearn mang đến các khóa học trực tuyến chuyên sâu, giúp học sinh THPT nắm vững kiến thức, rèn luyện tư duy và đạt thành tích xuất sắc trong học tập. Đồng hành cùng bạn trên con đường chinh phục tương lai!.</p>
+                    <div class="hero-buttons">
+                        <a href="courses.html" class="btn btn-primary">
+                            Xem Khóa Học <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="~/Image/HomePageWelcome.png" alt="Học viên học trực tuyến">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Courses -->
+    <section class="featured-courses">
+        <div class="container">
+            <div class="section-header">
+                <h2>Khóa Học Nổi Bật</h2>
+                <p>Khám phá các khóa học phổ biến nhất của chúng tôi và bắt đầu hành trình học tập của bạn ngay hôm nay.</p>
+            </div>
+
+            <div class="course-grid">
+                @foreach (var course in Model.FeaturedCourses)
+                {
+                    <a href="" class="course-card">
+                        <div class="course-image">
+                            <img src="@course.DuongDanAnhKhoaHoc" alt="@course.TieuDe">
+                            <span class="badge">@course.MonHoc</span>
+                        </div>
+                        <div class="course-content">
+                            <h3>@course.TieuDe</h3>
+                            <p>@course.MoTa</p>
+                            <div class="course-meta">
+                                <div class="meta-item">
+                                    <i class="fas fa-clock"></i>
+                                    <span>@course.ThoiHan ngày</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-book-open"></i>
+                                    <span>50 bài học</span>
+                                </div>
+                                <div class="meta-item">
+                                    <i class="fas fa-users"></i>
+                                    <span>0+ học viên</span> <!-- Có thể cần bảng thống kê học viên -->
+                                </div>
+                            </div>
+                        </div>
+                        <div class="course-footer">
+                            <div class="course-rating">
+                                <div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span>(0)</span> <!-- Có thể cần bảng đánh giá -->
+                            </div>
+                            <div class="course-price">@course.GiaKhoaHoc.ToString("N0")₫</div>
+                        </div>
+                    </a>
+                }
+            </div>
+
+            <div class="view-all">
+                <a href="courses.html" class="btn btn-outline">Xem Tất Cả Khóa Học</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>Duyệt Theo Môn Học</h2>
+                <p>Tìm khóa học hoàn hảo trong môn học bạn quan tâm.</p>
+            </div>
+            <div class="categories-grid">
+                @{
+                    int i = 0;
+                }
+                @foreach (var subject in Model.Subjects)
+                {
+                    if (i >= 10) break;
+                    i++;
+                    <a href="" class="category-card">
+						<div class="category-icon">
+							<i class="fas fa-book"></i>
+						</div>
+						<h3>@subject.Subject</h3>
+                        <p>@subject.Count khóa học</p>
+					</a>
+				}
+                <!-- Category 1 -->
+                @* <a href="categories.html" class="category-card"> *@
+                @*     <div class="category-icon"> *@
+                @*         <i class="fas fa-code"></i> *@
+                @*     </div> *@
+                @*     <h3>Lập Trình</h3> *@
+                @*     <p>120 khóa học</p> *@
+                @* </a> *@
+
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>Học Viên Nói Gì Về Chúng Tôi</h2>
+                <p>Lắng nghe từ các học viên đã thay đổi sự nghiệp của họ với các khóa học của chúng tôi.</p>
+            </div>
+
+            <div class="testimonial-grid">
+                <!-- Testimonial 1 -->
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img src="https://placehold.co/60x60" alt="Nguyễn Thị Hương" class="testimonial-avatar">
+                        <div class="testimonial-info">
+                            <h3>Nguyễn Thị Hương</h3>
+                            <p>Khóa Học Phát Triển Web</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">Khóa học này đã hoàn toàn thay đổi con đường sự nghiệp của tôi. Tôi đã đi từ việc không biết gì về lập trình đến có được công việc như một lập trình viên chỉ trong vòng 6 tháng!</p>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img src="https://placehold.co/60x60" alt="Trần Minh Tuấn" class="testimonial-avatar">
+                        <div class="testimonial-info">
+                            <h3>Trần Minh Tuấn</h3>
+                            <p>Nền Tảng Khoa Học Dữ Liệu</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">Các giảng viên rất am hiểu và nội dung khóa học rất toàn diện. Hiện tôi đã tự tin áp dụng các kỹ thuật khoa học dữ liệu vào công việc của mình.</p>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="testimonial-card">
+                    <div class="testimonial-header">
+                        <img src="https://placehold.co/60x60" alt="Lê Thị Minh Anh" class="testimonial-avatar">
+                        <div class="testimonial-info">
+                            <h3>Lê Thị Minh Anh</h3>
+                            <p>Lớp Học Chuyên Sâu UI/UX</p>
+                        </div>
+                    </div>
+                    <div class="testimonial-rating">
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <p class="testimonial-text">Là người chuyển ngành sang thiết kế, khóa học này đã cung cấp chính xác những gì tôi cần. Các dự án thực tế rất thử thách và phản hồi từ giảng viên vô cùng giá trị.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <div class="cta-content">
+                <h2>Sẵn Sàng Bắt Đầu Học?</h2>
+                <p>Tham gia cùng hàng ngàn học viên và bắt đầu hành trình học tập của bạn ngay hôm nay.</p>
+                <div class="cta-buttons">
+                    <a href="courses.html" class="btn btn-light">Xem Khóa Học</a>
+                    <a href="my-learning.html" class="btn btn-outline-light">Khóa Học Của Tôi</a>
+                </div>
+            </div>
+        </div>
+    </section>
+</main>

@@ -1,0 +1,586 @@
+﻿@model IEnumerable<WebApplication1.Models.KhoaHoc>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Quản lý Khóa học";
+}
+
+<!-- Custom CSS -->
+<style>
+    .custom-dropdown {
+        position: relative;
+        display: inline-block;
+    }
+
+    .dropdown-toggle-btn {
+        background-color: white;
+        color: #333;
+        padding: 8px 12px;
+        font-size: 14px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        cursor: pointer;
+    }
+
+        .dropdown-toggle-btn .fas {
+            margin-right: 8px;
+        }
+
+    .dropdown-content {
+        display: none; /* Ẩn menu mặc định */
+        position: absolute;
+        background-color: #ffffff;
+        min-width: 220px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+        border-radius: 6px;
+        padding: 8px 0;
+        border: 1px solid #ddd;
+    }
+
+        .dropdown-content a {
+            color: black;
+            padding: 10px 16px;
+            text-decoration: none;
+            display: block;
+            font-size: 14px;
+        }
+
+            .dropdown-content a:hover {
+                background-color: #f1f1f1;
+            }
+    /* Lớp 'show' dùng để hiển thị menu, được điều khiển bằng JavaScript */
+    .show {
+        display: block;
+    }
+
+    .course-management {
+        min-height: 100vh;
+        background-color: #f9fafb;
+    }
+
+    .header-section {
+        background: white;
+        border-bottom: 1px solid #e5e7eb;
+        padding: 1.5rem 0;
+    }
+
+    .search-card {
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        margin-bottom: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .course-card {
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        transition: all 0.3s ease;
+        position: relative;
+        group: hover;
+        display: flex;
+        flex-direction: column;
+    }
+
+        .course-card:hover {
+            box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+    .course-image {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+    }
+
+        .course-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+    .course-card:hover .course-image img {
+        transform: scale(1.05);
+    }
+
+    .course-badge {
+        position: absolute;
+        top: 0.75rem;
+        left: 0.75rem;
+        background: #2563eb;
+        color: white;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.375rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .hover-actions {
+        position: absolute;
+        top: 0.75rem;
+        right: 0.75rem;
+        display: flex;
+        gap: 0.25rem;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+
+    .course-card:hover .hover-actions {
+        opacity: 1;
+    }
+
+    .action-btn {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 0.375rem;
+        border: none;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.875rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .action-btn.view {
+            background: rgba(59, 130, 246, 0.9);
+            color: white;
+        }
+
+        .action-btn.edit {
+            background: rgba(245, 158, 11, 0.9);
+            color: white;
+        }
+
+        .action-btn.delete {
+            background: rgba(239, 68, 68, 0.9);
+            color: white;
+        }
+
+    .course-content {
+        padding: 1rem;
+        flex-grow: 1;
+    }
+
+    .course-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        line-height: 1.4;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        transition: color 0.3s ease;
+    }
+
+    .course-card:hover .course-title {
+        color: #2563eb;
+    }
+
+    .course-teacher {
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .course-description {
+        color: #6b7280;
+        font-size: 0.875rem;
+        line-height: 1.4;
+        margin-bottom: 0.75rem;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .course-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-bottom: 1rem;
+    }
+
+    .course-footer {
+        padding: 0 1rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .course-price {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #2563eb;
+    }
+
+    .footer-actions {
+        display: flex;
+        gap: 0.25rem;
+    }
+
+        .footer-actions .btn {
+            padding: 0.375rem;
+            font-size: 0.875rem;
+        }
+
+    .view-controls {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1.5rem;
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    .view-mode-toggle {
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .view-mode-btn {
+        padding: 0.5rem;
+        border: 1px solid #d1d5db;
+        background: white;
+        border-radius: 0.375rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+    }
+
+        .view-mode-btn.active {
+            background: #2563eb;
+            color: white;
+            border-color: #2563eb;
+        }
+
+    .list-view .course-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .list-view .course-card {
+        display: flex;
+        flex-direction: row;
+        height: auto;
+    }
+
+    .list-view .course-image {
+        width: 200px;
+        height: 150px;
+        flex-shrink: 0;
+    }
+
+    .list-view .course-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 3rem 0;
+        color: #6b7280;
+    }
+
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+    .filter-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 24px;
+        background-color: #f9f9f9;
+        border-radius: 12px;
+        box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+        font-family: Arial, sans-serif;
+    }
+
+    .filter-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+    }
+
+    .filter-group {
+        flex: 1 1 300px;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .filter-label {
+        font-weight: bold;
+        margin-bottom: 6px;
+        color: #333;
+    }
+
+    .filter-input {
+        padding: 8px 12px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+    }
+
+    .filter-buttons {
+        display: flex;
+        flex: 1 1 300px;
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 10px 16px;
+        font-size: 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width: 100%;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+    .btn-outline {
+        background-color: white;
+        border: 1px solid #ccc;
+        color: #333;
+    }
+
+        .btn-outline:hover {
+            background-color: #f1f1f1;
+        }
+</style>
+
+<div class="course-management">
+    <!-- Header Section -->
+    <div class="header-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h1 class="mb-2">@ViewData["Title"]</h1>
+                    <p class="text-muted mb-0">Nơi quản lý, tìm kiếm, và thực hiện các thao tác trên tất cả các khóa học</p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                    <a asp-action="Create" class="btn btn-primary">
+                        <i class="fas fa-plus me-2"></i>Thêm khóa học mới
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container py-4">
+        <!-- Search and Filter Section -->
+
+        <div class="filter-container">
+            <form asp-action="Index" method="get">
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="searchString" class="filter-label">Tìm theo tên khóa học</label>
+                        <input type="text" id="searchString" name="searchString" class="filter-input"
+                               placeholder="VD: Lập trình C#" value="@ViewData["CurrentFilter"]" />
+                    </div>
+                    <div class="filter-group">
+                        <label for="teacherName" class="filter-label">Tên giáo viên</label>
+                        <input type="text" id="teacherName" name="teacherName" class="filter-input"
+                               placeholder="VD: Nguyễn Văn A" value="@ViewData["TeacherFilter"]" />
+                    </div>
+                    <div class="filter-buttons">
+                        <button type="submit" class="btn btn-primary">🔍 Lọc kết quả</button>
+                        <a asp-action="Index" class="btn btn-outline">❌ Xóa lọc</a>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+
+        <!-- View Controls -->
+        <div class="view-controls">
+            <div class="d-flex align-items-center gap-3">
+                <span class="text-muted">Hiển thị @Model.Count() khóa học</span>
+                <div class="vr"></div>
+                <div class="sort-controls">
+                    <span class="sort-label">Sắp xếp theo:</span>
+
+                    @{
+                        var currentSort = ViewData["CurrentSort"] as string;
+                    }
+
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["NameSortParm"]"
+                       asp-route-searchString="@ViewData["CurrentFilter"]"
+                       asp-route-teacherName="@ViewData["TeacherFilter"]"
+                       class="btn-sort @(currentSort == "name_asc" || currentSort == "name_desc" || currentSort == null ? "active" : "")">
+                        Tên
+                        @if (currentSort == "name_desc")
+                        {
+                            <i class="fas fa-arrow-down"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-arrow-up"></i>
+                        }
+                    </a>
+
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["PriceSortParm"]"
+                       asp-route-searchString="@ViewData["CurrentFilter"]"
+                       asp-route-teacherName="@ViewData["TeacherFilter"]"
+                       class="btn-sort @(currentSort == "price_asc" || currentSort == "price_desc" ? "active" : "")">
+                        Giá
+                        @if (currentSort == "price_desc")
+                        {
+                            <i class="fas fa-arrow-down"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-arrow-up"></i>
+                        }
+                    </a>
+
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["DateSortParm"]"
+                       asp-route-searchString="@ViewData["CurrentFilter"]"
+                       asp-route-teacherName="@ViewData["TeacherFilter"]"
+                       class="btn-sort @(currentSort == "date_asc" || currentSort == "date_desc" ? "active" : "")">
+                        Ngày cập nhật
+                        @if (currentSort == "date_desc")
+                        {
+                            <i class="fas fa-arrow-down"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-arrow-up"></i>
+                        }
+                    </a>
+                    <a asp-action="Index"
+                       asp-route-sortOrder="@ViewData["DateSortParm"]"
+                       asp-route-searchString="@ViewData["CurrentFilter"]"
+                       asp-route-teacherName="@ViewData["TeacherFilter"]"
+                       class="btn-sort @(currentSort == "teacher_asc" || currentSort == "teacher_desc" ? "active" : "")">
+                        Theo giao vien
+                        @if (currentSort == "teacher_desc")
+                        {
+                            <i class="fas fa-arrow-down"></i>
+                        }
+                        else
+                        {
+                            <i class="fas fa-arrow-up"></i>
+                        }
+                    </a>
+                </div>
+            </div>
+
+            <div class="view-mode-toggle">
+                <button class="view-mode-btn active" onclick="toggleView('grid')" title="Grid View">
+                    <i class="fas fa-th"></i>
+                </button>
+                <button class="view-mode-btn" onclick="toggleView('list')" title="List View">
+                    <i class="fas fa-list"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Course Grid/List -->
+        <div id="courseContainer" class="course-container">
+            @if (Model.Any())
+            {
+                <div class="course-grid">
+                    @foreach (var item in Model)
+                    {
+                        <div class="course-card">
+                            <div class="course-image">
+                                <img src="@(string.IsNullOrEmpty(item.DuongDanAnhKhoaHoc) ? "/images/placeholder-course.jpg" : item.DuongDanAnhKhoaHoc)"
+                                     alt="@item.TieuDe" />
+                                <div class="course-badge">@item.MonHoc</div>
+                            </div>
+
+                            <div class="course-content">
+                                <h3 class="course-title">@item.TieuDe</h3>
+                                <p class="course-teacher">GV: @item.MaGiaoVienNavigation.HoTen</p>
+                                <p class="course-description">@item.MoTa</p>
+                            </div>
+
+                            <div class="course-footer">
+                                <div class="course-price">@item.GiaKhoaHoc.ToString("N0")₫</div>
+                                <div class="footer-actions">
+                                    <a asp-action="Details" asp-route-id="@item.MaKhoaHoc" class="btn btn-outline-info btn-sm" title="Chi tiết">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a asp-action="Edit" asp-route-id="@item.MaKhoaHoc" class="btn btn-outline-warning btn-sm" title="Sửa">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.MaKhoaHoc" class="btn btn-outline-danger btn-sm" title="Xóa">
+                                        <i class="fas fa-trash"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="empty-state">
+                    <i class="fas fa-search"></i>
+                    <h5 class="mb-2">Không tìm thấy khóa học</h5>
+                    <p class="text-muted">Thử thay đổi từ khóa tìm kiếm hoặc xóa bộ lọc</p>
+                    <a asp-action="Index" class="btn btn-outline-primary">Xóa bộ lọc</a>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript -->
+<script>
+    function toggleView(mode) {
+        const container = document.getElementById('courseContainer');
+        const buttons = document.querySelectorAll('.view-mode-btn');
+
+        // Remove active class from all buttons
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        // Add active class to clicked button
+        event.target.closest('.view-mode-btn').classList.add('active');
+
+        // Toggle view mode
+        if (mode === 'list') {
+            container.classList.add('list-view');
+        } else {
+            container.classList.remove('list-view');
+        }
+    }
+
+    // Add smooth animations
+    document.addEventListener('DOMContentLoaded', function () {
+        const cards = document.querySelectorAll('.course-card');
+        cards.forEach((card, index) => {
+            card.style.animationDelay = `${index * 0.1}s`;
+            card.style.animation = 'fadeInUp 0.6s ease forwards';
+        });
+    });
+</script>

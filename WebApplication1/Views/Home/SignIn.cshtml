@@ -1,0 +1,152 @@
+﻿@model WebApplication1.ViewModels.LoginVM
+
+<main class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Đăng Nhập</h1>
+                <p>Chào mừng trở lại! Vui lòng đăng nhập để tiếp tục.</p>
+            </div>
+
+            <!-- User Type Toggle -->
+            <div class="user-type-toggle">
+                <div class="toggle-container">
+                    <input type="radio" id="student" name="userTypeRadio" value="student" checked>
+                    <input type="radio" id="admin" name="userTypeRadio" value="admin">
+                    <div class="toggle-slider"></div>
+                    <label for="student" class="toggle-label">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Học Sinh</span>
+                    </label>
+                    <label for="admin" class="toggle-label">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin</span>
+                    </label>
+                </div>
+            </div>
+
+            <form asp-action="SignIn" asp-controller="Home" method="post" class="auth-form" id="loginForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="UserType" asp-for="UserType" value="student" />
+                <div class="form-group">
+                    <label asp-for="DienThoai">Số điện thoại</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-phone"></i>
+                        <input asp-for="DienThoai" class="form-control" placeholder="Nhập số điện thoại" required>
+                    </div>
+                    <span asp-validation-for="DienThoai" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password">Mật khẩu</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input asp-for="Password" type="password" class="form-control" placeholder="Nhập mật khẩu" required>
+                        <button type="button" class="password-toggle" id="togglePassword">
+                            @* <i class="fas fa-eye"></i> *@
+                        </button>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-options">
+                    <div class="form-checkbox">
+                        <input asp-for="RememberMe" type="checkbox" id="remember">
+                        <label asp-for="RememberMe">Ghi nhớ đăng nhập</label>
+                    </div>
+                    <a href="forgot-password.html" class="forgot-password">Quên mật khẩu?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    <span class="btn-text">Đăng Nhập</span>
+                    <div class="btn-loader">
+                        <div class="spinner"></div>
+                    </div>
+                </button>
+                <div class="text-danger">@Html.ValidationSummary(false, "", new { @class = "text-danger" })</div>
+            </form>
+
+            <div class="auth-footer">
+                <p>Chưa có tài khoản? <a href="/signup">Đăng ký ngay</a></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const studentRadio = document.getElementById('student');
+        const adminRadio = document.getElementById('admin');
+        const userTypeInput = document.getElementById('UserType');
+
+        if (!studentRadio || !adminRadio || !userTypeInput) {
+            console.error('Không tìm thấy các elements cần thiết');
+            return;
+        }
+
+        studentRadio.addEventListener('change', handleToggle);
+        adminRadio.addEventListener('change', handleToggle);
+
+        function handleToggle() {
+            
+            if (studentRadio.checked) {
+                document.body.classList.add("student-mode");
+                document.body.classList.remove("admin-mode");
+                userTypeInput.value = "student";
+                
+                const authCard = document.querySelector('.auth-card');
+                if (authCard) {
+                    authCard.classList.remove('admin-mode');
+                    authCard.classList.add('student-mode');
+                }
+            }
+            else if (adminRadio.checked) {
+                document.body.classList.add("admin-mode");
+                document.body.classList.remove("student-mode");
+                userTypeInput.value = "admin";
+                
+                const authCard = document.querySelector('.auth-card');
+                if (authCard) {
+                    authCard.classList.add('admin-mode');
+                    authCard.classList.remove('student-mode');
+                }
+            }
+        }
+
+        // Khởi động lần đầu
+        handleToggle();
+
+        // Password toggle
+        const togglePasswordBtn = document.getElementById('togglePassword');
+        const passwordInput = document.querySelector('input[asp-for="Password"]');
+        
+        if (togglePasswordBtn && passwordInput) {
+            togglePasswordBtn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        }
+
+        // Form submission handling
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.classList.add('loading');
+                    submitBtn.disabled = true;
+                }
+            });
+        }
+    });
+
+</script>

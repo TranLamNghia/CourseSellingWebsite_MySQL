@@ -1,0 +1,232 @@
+﻿/* Cart Page */
+.cart-container {
+    max-width: 1000px;
+    padding-top: 2rem;
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
+
+.cart-layout {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    margin-top: 1.5rem;
+}
+
+.cart-card {
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    background-color: var(--white);
+}
+
+    .cart-card h2 {
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+.cart-item {
+    display: flex;
+    gap: 1rem;
+}
+
+.cart-item-image {
+    flex-shrink: 0;
+    width: 120px;
+    height: 80px;
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+    .cart-item-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+.cart-item-details {
+    flex-grow: 1;
+}
+
+    .cart-item-details h3 {
+        font-size: 1rem;
+        margin-bottom: 0.25rem;
+    }
+
+    .cart-item-details p {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        margin-bottom: 0;
+    }
+
+.cart-item-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+}
+
+.cart-item-price {
+    font-weight: 700;
+}
+
+.divider {
+    height: 1px;
+    background-color: var(--border-color);
+    margin: 1.5rem 0;
+}
+
+.summary-card {
+    padding: 1.5rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    background-color: var(--white);
+    position: sticky;
+    top: 5rem;
+}
+
+    .summary-card h2 {
+        font-size: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+.summary-details {
+    margin-bottom: 1.5rem;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.75rem;
+}
+
+    .summary-row.discount {
+        color: var(--success-color);
+    }
+
+    .summary-row.total {
+        font-weight: 700;
+        font-size: 1.125rem;
+    }
+
+.promo-code {
+    margin-bottom: 1.5rem;
+}
+
+.promo-input {
+    display: flex;
+    gap: 0.5rem;
+}
+
+    .promo-input input {
+        flex-grow: 1;
+        padding: 0.5rem;
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius);
+        font-size: 0.875rem;
+    }
+
+.cart-guarantees {
+    margin-top: 1rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+    .cart-guarantees p {
+        margin-bottom: 0.25rem;
+    }
+
+/* Related Base Styles */
+:root {
+    --primary-color: #2563eb;
+    --secondary-color: #f8fafc;
+    --text-color: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --success-color: #10b981;
+    --white: #ffffff;
+    --radius-lg: 0.5rem;
+    --radius: 0.25rem;
+}
+
+h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+}
+
+h2 {
+    font-size: 1.875rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+}
+
+p {
+    margin-bottom: 1rem;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--radius);
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: var(--white);
+}
+
+    .btn-primary:hover {
+        background-color: var(--primary-hover);
+    }
+
+.btn-outline {
+    background-color: transparent;
+    border-color: var(--border-color);
+    color: var(--text-color);
+}
+
+    .btn-outline:hover {
+        background-color: var(--gray-100);
+    }
+
+.btn-block {
+    display: block;
+    width: 100%;
+}
+
+.btn-icon {
+    padding: 0.5rem;
+    color: var(--text-muted);
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+    .btn-icon:hover {
+        color: #f61c1c;
+    }
+
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+    .back-link:hover {
+        text-decoration: underline;
+    }

@@ -1,0 +1,271 @@
+﻿@model WebApplication1.Areas.Student.ViewModels.CoursePageViewModel
+@{
+    ViewData["Title"] = Model.Course.TieuDe + " - EduLearn";
+    Layout = "/Areas/Student/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/course-detail.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<main>
+    <!-- Course Header -->
+    <div class="course-header">
+        <div class="container">
+            <a href="@Url.Action("CoursePage", "Course")" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+                Quay lại Khóa Học
+            </a>
+
+            <div class="course-header-content">
+                <div class="course-info">
+                    <span class="badge">@Model.Course.MonHoc</span>
+                    <h1>@Model.Course.TieuDe</h1>
+
+                    <div class="instructor-preview">
+                        <p class="instructor-name">Giáo viên: @Model.Course.MaGiaoVienNavigation.HoTen</p>
+                    </div>
+
+                    <!-- Mobile Course Card -->
+                    <div class="course-card-mobile">
+                        <div class="course-preview-image">
+                            <img src="@Model.Course.DuongDanAnhKhoaHoc" alt="@Model.Course.TieuDe">
+                        </div>
+                        <div class="course-card-content">
+                            <div class="course-price">@Model.Course.GiaKhoaHoc.ToString("N0")đ</div>
+                            <button class="btn btn-primary btn-block">
+                                <i class="fas fa-shopping-cart"></i>
+                                Thêm Vào Giỏ
+                            </button>
+                            <button class="btn btn-outline btn-block">Mua Ngay</button>
+                            <div class="course-guarantees">
+                                <p>Đảm Bảo Hoàn Tiền 30 Ngày</p>
+                                <p>Truy Cập Trọn Đời</p>
+                                <p>Chứng Chỉ Hoàn Thành</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Desktop Course Card -->
+                <div class="course-card-desktop">
+                    <div class="course-preview-image">
+                        <img src="@Model.Course.DuongDanAnhKhoaHoc" alt="@Model.Course.TieuDe">
+                        <div class="preview-overlay">
+                            <button class="btn btn-outline-light">
+                                <i class="fas fa-play-circle"></i>
+                                Xem Trước
+                            </button>
+                        </div>
+                    </div>
+                    <div class="course-card-content">
+                        <div class="course-price">@Model.Course.GiaKhoaHoc.ToString("N0")đ</div>
+                        @if (Model.InCourse == "false")
+                        {
+                            <button class="btn btn-primary btn-block btn-add-to-cart" data-ma-khoa-hoc="@Model.Course.MaKhoaHoc">
+                                <i class="fas fa-shopping-cart"></i>
+                                Thêm Vào Giỏ
+                            </button>
+                        }
+                        else if (Model.InCourse == "inYourCart")
+                        {
+                            <button class="btn btn-block btn-in-cart" disabled>
+                                Đã có trong giỏ hàng
+                            </button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-block btn-in-course" disabled>
+                                Đã là khóa học của bạn
+                            </button>
+                        }
+                        <div class="course-guarantees">
+                            <p>Đảm Bảo Hoàn Tiền 30 Ngày</p>
+                            <p>Truy Cập Trọn Đời</p>
+                            <p>Chứng Chỉ Hoàn Thành</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Course Content -->
+    <div class="course-content-section">
+        <div class="container">
+            <div class="course-tabs">
+                <div class="tabs">
+                    <button class="tab-button active" data-tab="overview">Tổng Quan</button>
+                    <button class="tab-button" data-tab="curriculum">Bài Học</button>
+                </div>
+
+                <div class="tab-content active" id="overview">
+                    <div class="tab-content-layout">
+                        <div class="main-content">
+                            <h2>Bạn sẽ học được gì</h2>
+                            <div class="learning-outcomes">
+                                @foreach (var outcome in Model.Course.MucTieuKhoaHocs.OrderBy(m => m.ThuTu))
+                                {
+                                    <div class="outcome-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>@outcome.NoiDung</span>
+                                    </div>
+                                }
+                            </div>
+
+                            <h2>Mô Tả Khóa Học</h2>
+                            <div class="course-description">
+                                @foreach (var paragraph in Model.Course.MoTa.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None))
+                                {
+                                    <p>@paragraph</p>
+                                }
+                            </div>
+
+                            <h2>Yêu Cầu</h2>
+                            <ul class="requirements-list">
+                                @foreach (var requirement in Model.Course.YeuCauKhoaHocs.OrderBy(y => y.ThuTu))
+                                {
+                                    <li>@requirement.NoiDung</li>
+                                }
+                            </ul>
+                        </div>
+
+                        <div class="sidebar-content">
+                            <div class="course-includes-card">
+                                <h3>Khóa học này bao gồm:</h3>
+                                <div class="includes-list">
+                                    @foreach (var include in Model.Includes)
+                                    {
+                                        <div class="includes-item">
+                                            <i class="fas fa-@(include.Contains("video") ? "play-circle" : include.Contains("tài liệu") ? "download" : include.Contains("trọn đời") ? "globe" : "certificate")"></i>
+                                            <span>@include</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="curriculum">
+                    <h2>Nội Dung Khóa Học</h2>
+
+                    <div class="lesson-list-simple">
+                        @foreach (var lesson in Model.Course.BaiHocs.OrderBy(b => b.ThuTu))
+                        {
+                            <div class="lesson-row">
+                                <div class="lesson-content">
+                                    <div class="lesson-icon">
+                                        <i class="fas fa-play-circle"></i>
+                                    </div>
+                                    <span class="lesson-title">@lesson.TieuDe</span>
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Related Courses -->
+    <section class="related-courses">
+        <div class="container">
+            <h2>Học Viên Cũng Đã Mua</h2>
+            <div class="related-courses-grid">
+                @foreach (var relatedCourse in Model.RelatedCourses)
+                {
+                    <a href="" class="course-card-small" data-id="@relatedCourse.MaKhoaHoc">
+                        <div class="course-image">
+                            <img src="@relatedCourse.DuongDanAnhKhoaHoc" alt="@relatedCourse.TieuDe">
+                            <span class="badge">@relatedCourse.MonHoc</span>
+                        </div>
+                        <div class="course-content">
+                            <h3>@relatedCourse.TieuDe</h3>
+                        </div>
+                        <div class="course-footer">
+                            <div class="rating-compact">
+                                <!--<div class="stars">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                                <span>(1850)</span>-->
+                            </div>
+                            <div class="course-price">@relatedCourse.GiaKhoaHoc.ToString("N0")đ</div>
+                        </div>
+                    </a>
+                }
+            </div>
+        </div>
+    </section>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const tabButtons = document.querySelectorAll(".tab-button");
+        const tabContents = document.querySelectorAll(".tab-content");
+
+        tabButtons.forEach(button => {
+            button.addEventListener("click", function () {
+                tabButtons.forEach(btn => btn.classList.remove("active"));
+                this.classList.add("active");
+
+                const tabId = this.getAttribute("data-tab");
+                tabContents.forEach(content => content.classList.remove("active"));
+                const activeContent = document.getElementById(tabId);
+                if (activeContent) {
+                    activeContent.classList.add("active");
+                }
+            });
+        });
+
+
+        const courseCards = document.querySelectorAll(".course-card-small");
+
+        courseCards.forEach(card => {
+            card.addEventListener("click", function (e) {
+                e.preventDefault(); // Ngăn chặn hành vi mặc định của thẻ <a>
+                const courseId = this.getAttribute("data-id");
+
+                if (courseId) {
+                    window.location.href = `/student/coursedetail/${courseId}`;
+                }
+            });
+        });
+
+        $('.btn-add-to-cart').on('click', function () {
+            const maKhoaHoc = $(this).data('ma-khoa-hoc');
+
+            $.ajax({
+                url: '/student/addtocart',
+                type: 'POST',
+                data: { maKhoaHoc: maKhoaHoc },
+                success: function (response) {
+                    if (response.success) {
+                        $('.btn-add-to-cart')
+                            .removeClass('btn-primary btn-add-to-cart')
+                            .addClass('btn-in-cart')
+                            .prop('disabled', true)
+                            .html('Đã có trong giỏ hàng');
+                    } else {
+                        $('#errorAlert').text('Lỗi: ' + response.message).show();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    let errorMessage = xhr.responseJSON?.message || 'Không thể thêm khóa học vào giỏ hàng.';
+                    $('#errorAlert').text('Lỗi: ' + errorMessage).show();
+                }
+            });
+        });
+    });
+
+</script>

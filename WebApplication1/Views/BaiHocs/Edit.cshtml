@@ -1,0 +1,74 @@
+﻿@model WebApplication1.Models.BaiHoc
+
+@{
+    ViewData["Title"] = "Chỉnh sửa Bài học";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+    /* Copy style từ các trang Create/Edit khác */
+    .edit-lesson-container { max-width: 750px; margin: 40px auto; padding: 30px; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); }
+    /* ... các style khác ... */
+    .current-video-container { margin-bottom: 20px; }
+</style>
+
+<div class="edit-lesson-container">
+    <h2>Chỉnh Sửa Bài Học</h2>
+    <p class="course-subtitle">Cho khóa học: <strong>@ViewBag.TenKhoaHoc</strong></p>
+    <hr />
+
+    <form asp-action="Edit" asp-route-id="@Model.MaBaiHoc" method="post" enctype="multipart/form-data">
+        <div asp-validation-summary="All" class="text-danger"></div>
+
+        @* input ẩn cho MaBaiHoc và MaKhoaHoc để chúng được POST lại server *@
+        <input type="hidden" asp-for="MaBaiHoc" />
+        <input type="hidden" asp-for="MaKhoaHoc" />
+
+        <div class="form-group">
+            <label asp-for="TieuDe" class="control-label"></label>
+            <input asp-for="TieuDe" class="form-control" />
+            <span asp-validation-for="TieuDe" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="ThuTu" class="control-label"></label>
+            <input asp-for="ThuTu" class="form-control" type="number" min="1" />
+            <span asp-validation-for="ThuTu" class="text-danger"></span>
+        </div>
+
+        @if (!string.IsNullOrEmpty(Model.LinkVideo))
+        {
+            <div class="form-group current-video-container">
+                <label>Video hiện tại</label>
+                <video width="100%" controls>
+                    <source src="@Model.LinkVideo" type="video/mp4">
+                    Trình duyệt của bạn không hỗ trợ thẻ video.
+                </video>
+            </div>
+        }
+
+        <div class="form-group">
+            <label for="videoFile" class="control-label">Tải lên video mới (tùy chọn)</label>
+            <input type="file" name="videoFile" id="videoFile" class="form-control" accept="video/*" />
+            <small class="form-text text-muted">Chỉ chọn nếu bạn muốn thay thế video hiện tại.</small>
+            @* Hiển thị lỗi validation cho LinkVideo nếu có (ví dụ: upload lỗi) *@
+            <span asp-validation-for="LinkVideo" class="text-danger"></span>
+        </div>
+
+        <div class="button-group">
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Lưu thay đổi
+            </button>
+            <a asp-controller="BaiHocs" asp-action="Index" asp-route-maKhoaHoc="@Model.MaKhoaHoc" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Quay lại
+            </a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

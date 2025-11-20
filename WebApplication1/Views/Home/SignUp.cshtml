@@ -1,0 +1,284 @@
+﻿@model WebApplication1.ViewModels.RegisterVM
+
+<main class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card">
+            <div class="auth-header">
+                <h1>Tạo Tài Khoản</h1>
+                <p>Tham gia cùng hàng ngàn học viên trên EduLearn.</p>
+            </div>
+
+            <div class="user-type-toggle">
+                <div class="toggle-container">                    
+                    <input type="radio" id="student" name="userTypeRadio" value="student" checked>
+                    <input type="radio" id="admin" name="userTypeRadio" value="admin">
+                    <div class="toggle-slider"></div>
+                    <label for="student" class="toggle-label">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Học Sinh</span>
+                    </label>
+                    <label for="admin" class="toggle-label">
+                        <i class="fas fa-user-shield"></i>
+                        <span>Admin</span>
+                    </label>
+                </div>
+            </div>
+
+            <form asp-action="SignUp" asp-controller="Home" method="post" class="auth-form" id="signupForm">
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="UserType" asp-for="UserType" value="student" />
+                <div class="form-row">
+                    <div class="form-group">
+                        <label asp-for="LastName">Họ</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input asp-for="LastName" class="form-control" placeholder="Nhập họ" required>
+                        </div>
+                        <span asp-validation-for="LastName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="FirstName">Tên</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-user"></i>
+                            <input asp-for="FirstName" class="form-control" placeholder="Nhập tên" required>
+                        </div>
+                        <span asp-validation-for="FirstName" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="DienThoai">Số điện thoại</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-phone"></i>
+                        <input asp-for="DienThoai" class="form-control" id="phone-signup" placeholder="Nhập số điện thoại" required>
+                    </div>
+                    <span asp-validation-for="DienThoai" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Email">Email</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input asp-for="Email" class="form-control" placeholder="Nhập email" required>
+                    </div>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password">Mật khẩu</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input asp-for="Password" type="password" class="form-control" id="password-signup" placeholder="Tạo mật khẩu" required>
+                        <button type="button" class="password-toggle" id="togglePasswordSignup">
+                            @* <i class="fas fa-eye"></i> *@
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar">
+                            <div class="strength-fill"></div>
+                        </div>
+                        <span class="strength-text">Mật khẩu yếu</span>
+                    </div>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="ConfirmPassword">Xác nhận mật khẩu</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input asp-for="ConfirmPassword" type="password" class="form-control" id="confirmPassword" placeholder="Xác nhận mật khẩu" required>
+                        <button type="button" class="password-toggle" id="toggleConfirmPassword">
+                            @* <i class="fas fa-eye"></i> *@
+                        </button>
+                    </div>
+                    <div class="password-match" id="passwordMatch"></div>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+
+                <div class="form-checkbox">
+                    <input type="checkbox" id="terms" required>
+                    <label for="terms">
+                        Tôi đồng ý với <a href="terms.html" target="_blank">Điều khoản dịch vụ</a>
+                        và <a href="privacy.html" target="_blank">Chính sách quyền riêng tư</a>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">
+                    <span class="btn-text">Tạo Tài Khoản</span>
+                    <div class="btn-loader">
+                        <div class="spinner"></div>
+                    </div>
+                </button>
+                <div class="text-danger">@Html.ValidationSummary(false, "", new { @class = "text-danger" })</div>
+            </form>
+
+            <div class="auth-footer">
+                <p>Đã có tài khoản? <a href="/signin">Đăng nhập ngay</a></p>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const studentRadio = document.getElementById('student');
+        const adminRadio = document.getElementById('admin');
+        const userTypeInput = document.getElementById('UserType');
+
+        if (!studentRadio || !adminRadio || !userTypeInput) {
+            console.error('Không tìm thấy các elements cần thiết');
+            return;
+        }
+
+        studentRadio.addEventListener('change', handleToggle);
+        adminRadio.addEventListener('change', handleToggle);
+
+        function handleToggle() {
+
+            if (studentRadio.checked) {
+                document.body.classList.add("student-mode");
+                document.body.classList.remove("admin-mode");
+                userTypeInput.value = "student";
+
+                const authCard = document.querySelector('.auth-card');
+                if (authCard) {
+                    authCard.classList.remove('admin-mode');
+                    authCard.classList.add('student-mode');
+                }
+            }
+            else if (adminRadio.checked) {
+                document.body.classList.add("admin-mode");
+                document.body.classList.remove("student-mode");
+                userTypeInput.value = "admin";
+
+                const authCard = document.querySelector('.auth-card');
+                if (authCard) {
+                    authCard.classList.add('admin-mode');
+                    authCard.classList.remove('student-mode');
+                }
+            }
+        }
+
+        // Khởi động lần đầu
+        handleToggle();
+
+        // Password toggle
+        const togglePasswordBtn = document.getElementById('togglePassword');
+        const passwordInput = document.querySelector('input[asp-for="Password"]');
+
+        if (togglePasswordBtn && passwordInput) {
+            togglePasswordBtn.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+        }
+
+        // Form submission handling
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', function(e) {
+                const submitBtn = this.querySelector('button[type="submit"]');
+                if (submitBtn) {
+                    submitBtn.classList.add('loading');
+                    submitBtn.disabled = true;
+                }
+            });
+        }
+    });
+
+    // Password toggle functions
+    function setupPasswordToggle(toggleId, inputId) {
+      document.getElementById(toggleId).addEventListener('click', function() {
+        const passwordInput = document.getElementById(inputId);
+        const icon = this.querySelector('i');
+
+        if (passwordInput.type === 'password') {
+          passwordInput.type = 'text';
+          icon.classList.remove('fa-eye');
+          icon.classList.add('fa-eye-slash');
+        } else {
+          passwordInput.type = 'password';
+          icon.classList.remove('fa-eye-slash');
+          icon.classList.add('fa-eye');
+        }
+      });
+    }
+
+    setupPasswordToggle('togglePasswordSignup', 'password-signup');
+    setupPasswordToggle('toggleConfirmPassword', 'confirmPassword');
+
+    // Password strength checker
+    document.getElementById('password-signup').addEventListener('input', function() {
+      const password = this.value;
+      const strengthBar = document.querySelector('.strength-fill');
+      const strengthText = document.querySelector('.strength-text');
+
+      let strength = 0;
+      let strengthLabel = 'Mật khẩu yếu';
+      let strengthColor = '#ff4757';
+
+      if (password.length >= 8) strength++;
+      if (/[a-z]/.test(password)) strength++;
+      if (/[A-Z]/.test(password)) strength++;
+      if (/[0-9]/.test(password)) strength++;
+      if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+      switch (strength) {
+        case 0:
+        case 1:
+          strengthLabel = 'Mật khẩu yếu';
+          strengthColor = '#ff4757';
+          break;
+        case 2:
+        case 3:
+          strengthLabel = 'Mật khẩu trung bình';
+          strengthColor = '#ffa502';
+          break;
+        case 4:
+          strengthLabel = 'Mật khẩu mạnh';
+          strengthColor = '#2ed573';
+          break;
+        case 5:
+          strengthLabel = 'Mật khẩu rất mạnh';
+          strengthColor = '#1dd1a1';
+          break;
+      }
+
+      strengthBar.style.width = `${(strength / 5) * 100}%`;
+      strengthBar.style.backgroundColor = strengthColor;
+      strengthText.textContent = strengthLabel;
+      strengthText.style.color = strengthColor;
+    });
+
+    // Password match checker
+    function checkPasswordMatch() {
+      const password = document.getElementById('password-signup').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      const matchIndicator = document.getElementById('passwordMatch');
+
+      if (confirmPassword === '') {
+        matchIndicator.textContent = '';
+        return;
+      }
+
+      if (password === confirmPassword) {
+        matchIndicator.textContent = '✓ Mật khẩu khớp';
+        matchIndicator.style.color = '#2ed573';
+      } else {
+        matchIndicator.textContent = '✗ Mật khẩu không khớp';
+        matchIndicator.style.color = '#ff4757';
+      }
+    }
+
+    document.getElementById('password-signup').addEventListener('input', checkPasswordMatch);
+    document.getElementById('confirmPassword').addEventListener('input', checkPasswordMatch);
+</script>

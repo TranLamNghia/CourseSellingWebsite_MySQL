@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduLearn - Nền tảng học trực tuyến</title>
+    <link rel="stylesheet" href="~/css/styleStudent.css">
+    <link rel="stylesheet" href="~/css/login.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+
+                <a href="/homepage" class="logo"><img width="auto" height="40" src="~/Image/Logo.png" alt="EduLearn Logo" class="logo-badge"></a>
+
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="courses.html">Khóa Học</a></li>
+                        <li><a href="categories.html">Môn Học</a></li>
+                        <li><a href="about.html">Giới Thiệu</a></li>
+                        <li><a href="contact.html">Liên Hệ</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-actions">
+                    @* <a href="cart.html" class="icon-button"> *@
+                    @*     <i class="fas fa-shopping-cart"></i> *@
+                    @*     <span class="sr-only">Cart</span> *@
+                    @* </a> *@
+                    <a href="/signin" class="btn btn-text">Đăng nhập</a>
+                    <a href="/signup" class="btn btn-primary">Đăng ký</a>
+                </div>
+
+                @* <div class="mobile-actions"> *@
+                @*     <a href="cart.html" class="icon-button"> *@
+                @*         <i class="fas fa-shopping-cart"></i> *@
+                @*         <span class="sr-only">Cart</span> *@
+                @*     </a> *@
+                @*     <a href="/signin" class="icon-button"> *@
+                @*         <i class="fas fa-user"></i> *@
+                @*         <span class="sr-only">Account</span> *@
+                @*     </a> *@
+                @* </div> *@
+            </div>
+        </div>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="copyright">© 2025 EduLearn. All rights reserved.</p>
+                <div class="footer-links">
+                    <a href="terms.html">Terms</a>
+                    <a href="privacy.html">Privacy</a>
+                    <a href="contact.html">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Mobile menu toggle
+        // Lưu ý: Đảm bảo bạn có một phần tử với id="menuToggle" trong HTML
+        // để đoạn mã này hoạt động, ví dụ một nút hamburger menu cho di động.
+        var menuToggleButton = document.getElementById('menuToggle');
+        if (menuToggleButton) {
+            menuToggleButton.addEventListener('click', function () {
+                document.querySelector('.main-nav').classList.toggle('active');
+            });
+        }
+    </script>
+
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+</html>

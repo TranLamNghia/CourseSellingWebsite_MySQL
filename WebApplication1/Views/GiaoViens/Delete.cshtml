@@ -1,0 +1,111 @@
+﻿@model WebApplication1.Models.GiaoVien
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Xóa giáo viên";
+}
+
+<style>
+    .delete-container {
+        max-width: 480px;
+        margin: 50px auto;
+        padding: 30px 25px;
+        background-color: #fff3f3;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(255, 0, 0, 0.2);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        color: #b30000;
+    }
+
+        .delete-container h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-weight: 700;
+            font-size: 1.8rem;
+        }
+
+        .delete-container h4 {
+            text-align: center;
+            font-weight: 600;
+            margin-bottom: 30px;
+            color: #800000;
+        }
+
+    dl.row {
+        margin-bottom: 30px;
+    }
+
+    dt.col-sm-2 {
+        font-weight: 600;
+        color: #a30000;
+    }
+
+    dd.col-sm-10 {
+        margin-left: 0;
+        padding-left: 10px;
+        border-left: 3px solid #e60000;
+        color: #4d0000;
+        font-size: 1.1rem;
+        margin-bottom: 15px;
+    }
+
+    .btn-group {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .btn-danger {
+        background-color: #d93025;
+        border: none;
+        padding: 10px 25px;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-danger:hover {
+            background-color: #b22a1d;
+        }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        padding: 10px 25px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 1rem;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-secondary:hover {
+            background-color: #565e64;
+        }
+</style>
+
+<div class="delete-container">
+    <h2>Xóa giáo viên</h2>
+    <h4>Bạn có chắc chắn muốn xóa giáo viên này không?</h4>
+
+    <dl class="row">
+        <dt class="col-sm-2">Mã giáo viên</dt>
+        <dd class="col-sm-10">@Model.MaGiaoVien</dd>
+
+        <dt class="col-sm-2">Họ tên</dt>
+        <dd class="col-sm-10">@Model.HoTen</dd>
+    </dl>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="MaGiaoVien" />
+        <div class="btn-group">
+            <button type="submit" class="btn btn-danger">Xóa</button>
+            <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+        </div>
+    </form>
+</div>

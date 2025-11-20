@@ -1,0 +1,206 @@
+﻿@{
+    Layout = "/Areas/Student/Views/Shared/_Layout.cshtml"; // Chỉ định đường dẫn tuyệt đối đến layout ngoài khu vực
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Khóa học của tôi - EduLearn</title>
+    <link rel="stylesheet" href="~/css/myCart.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<main>
+    <div class="container cart-container">
+        <a href="/student/coursepage" class="back-link">
+            <i class="fas fa-arrow-left"></i>
+            Tiếp tục mua khóa học
+        </a>
+
+        <h1>Giỏ Hàng Của Bạn</h1>
+
+        <div class="cart-layout">
+            <div class="cart-items">
+                <div class="cart-card">
+                    <h2 id="totalItems">Khóa học trong giỏ (@Model.TotalItems)</h2>
+                    @foreach (var item in Model.CartItems)
+                    {
+                        <div class="cart-item" data-price="@item.GiaKhoaHoc">
+                            <div class="cart-item-image">
+                                <img src="@item.DuongDanAnhKhoaHoc" alt="@item.TieuDe">
+                            </div>
+                            <div class="cart-item-details">
+                                <h3>@item.TieuDe</h3>
+                                <p>Giảng viên: @item.MaGiaoVienNavigation.HoTen</p>
+                            </div>
+                            <div class="cart-item-actions">
+                                <button type="submit" class="btn-icon delete-btn" data-ma-khoa-hoc="@item.MaKhoaHoc">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
+                                <div class="cart-item-price">@item.GiaKhoaHoc.ToString("N0") VND</div>
+                            </div>
+                        </div>
+                        <div class="divider"></div>
+                    }
+
+                    @if (Model.TotalItems == 0)
+                    {
+                        <p>Không có khóa học nào trong giỏ hàng.</p>
+                    }
+                </div>
+            </div>
+
+            <div class="order-summary">
+                <div class="summary-card">
+                    <h2>Tóm tắt đơn hàng</h2>
+
+                    <div class="summary-details">
+                        <div class="summary-row">
+                            <span>Tạm tính</span>
+                            <span id="totalPrice" data-value="@Model.TotalPrice">@Model.TotalPrice.ToString("N0") VND</span>
+                        </div>
+                        <div class="summary-row discount">
+                            <span>Giảm giá</span>
+                            <span>0 VND</span>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <div class="summary-row total">
+                            <span>Thành tiền</span>
+                            <span id="finalTotalPrice" data-value="@Model.TotalPrice">@Model.TotalPrice.ToString("N0") VND</span>
+                        </div>
+                    </div>
+
+                    <form method="POST" action="/student/mycart/requestpaymentvnpay" id="paymentForm">
+                        <input type="hidden" name="Name" value="@User.Identity.Name" />
+                        <input type="hidden" name="Amount" value="@Model.TotalPrice" />
+                        <input type="hidden" name="OrderDescription" value="Thanh toán qua VnPay tại EduLearn" />
+                        <input type="hidden" name="OrderType" value="course" />
+
+                        <button type="submit" class="btn btn-primary btn-block">Tiến hành thanh toán</button>
+                    </form>
+
+                    <div class="cart-guarantees">
+                        <p>Thanh toán an toàn</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('.delete-btn').on('click', function () {
+            const maKhoaHoc = $(this).data('ma-khoa-hoc');
+            const cartItem = $(this).closest('.cart-item');
+            const priceRemoved = parseInt(cartItem.data('price')) || 0;
+
+            if (confirm('Bạn có chắc chắn muốn xóa khóa học này khỏi giỏ hàng?')) {
+                $.ajax({
+                    url: '/student/removefromcart',
+                    type: 'DELETE',
+                    data: { maKhoaHoc: maKhoaHoc },
+                    success: function (response) {
+                        cartItem.fadeOut(300, function() {
+                            $(this).next('.divider').remove();
+                            $(this).remove();
+
+                            const totalItems = $('.cart-item').length;
+                            $('#totalItems').text(`Khóa học trong giỏ (${totalItems})`);
+
+                                let currentTotal = parseInt($('#finalTotalPrice').data('value')) || 0;
+                                let newTotal = currentTotal - priceRemoved;
+                                if (newTotal < 0) newTotal = 0;
+
+                                $('#totalPrice').data('value', newTotal).text(newTotal.toLocaleString('en-US') + ' VND');
+
+                                $('#finalTotalPrice').data('value', newTotal).text(newTotal.toLocaleString('en-US') + ' VND');
+
+                            $('#errorAlert').hide();
+                        });
+                    },
+                    error: function (xhr, status, error) {
+                        let errorMessage = 'Không thể xóa khóa học do lỗi server.';
+                        if (xhr.responseJSON && xhr.responseJSON.message) {
+                            errorMessage = xhr.responseJSON.message;
+                        }
+                        $('#errorAlert').text('Lỗi: ' + errorMessage).show();
+                    }
+                });
+            }
+        });
+
+        $('#paymentForm').on('submit', function (e) {
+            e.preventDefault();
+
+            var formData = {
+                Name: $(this).find('input[name="Name"]').val(),
+                Amount: $(this).find('input[name="Amount"]').val(),
+                OrderDescription: $(this).find('input[name="OrderDescription"]').val(),
+                OrderType: $(this).find('input[name="OrderType"]').val()
+            };
+
+            $.ajax({
+                url: '/student/mycart/requestpaymentvnpay',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success && response.paymentUrl) {
+                        window.location.href = response.paymentUrl;
+                        setTimeout(checkPaymentStatus, 2000);
+                    } else {
+                        $('#errorAlert').text('Lỗi: ' + (response.message || 'Không thể tạo yêu cầu thanh toán.')).show();
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $('#errorAlert').text('Lỗi: Không thể kết nối đến server. Vui lòng thử lại.').show();
+                }
+            });
+        });
+
+        function checkPaymentStatus() {
+            $.ajax({
+                url: '/student/mycart/PaymentCallbackVnpay',
+                type: 'GET',
+                success: function (response) {
+                    if (response) {
+                        if (response.Success) {
+                            $.ajax({
+                                url: '/student/mylearning',
+                                type: 'POST',
+                                data: {
+                                    Name: '@User.Identity.Name',
+                                    Amount: '@Model.TotalPrice',
+                                    OrderDescription: 'Thanh toán qua VnPay tại EduLearn',
+                                    OrderType: 'course'
+                                },
+                                success: function (result) {
+                                    if (result.success) {
+                                        window.location.href = '/student/mylearning';
+                                    } else {
+                                        window.location.href = '/student/mycart';
+                                    }
+                                },
+                                error: function () {
+                                    window.location.href = '/student/mylearningfailure?message=' + encodeURIComponent('Lỗi xử lý thanh toán.');
+                                }
+                            });
+                        } else {
+                            window.location.href = '/student/mycart?errorMessage=' + encodeURIComponent(response.Message || 'Thanh toán thất bại.');
+                        }
+                    } else {
+                        setTimeout(checkPaymentStatus, 2000); // Thử lại nếu chưa có dữ liệu
+                    }
+                },
+                error: function (xhr, status, error) {
+                    setTimeout(checkPaymentStatus, 2000); // Thử lại nếu có lỗi
+                }
+            });
+        }
+    });
+</script>

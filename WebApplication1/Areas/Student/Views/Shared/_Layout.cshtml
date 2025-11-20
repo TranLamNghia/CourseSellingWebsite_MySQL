@@ -1,0 +1,125 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduLearn - Nền tảng học trực tuyến</title>
+    <link rel="stylesheet" href="~/css/styleStudent.css">
+    <link rel="stylesheet" href="~/css/login.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <div class="header-content">
+                <a href="/student/homepage" class="logo"><img width="auto" height="40" src="~/Image/Logo.png" alt="EduLearn Logo" class="logo-badge"></a>
+
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="/student/coursepage">Khóa Học</a></li>
+                        <li><a href="categories.html">Môn Học</a></li>
+                        <li><a href="about.html">Giới Thiệu</a></li>
+                        <li><a href="contact.html">Liên Hệ</a></li>
+                    </ul>
+                </nav>
+
+                <div class="header-actions">
+                    <a href="/student/mycart" class="icon-button cart-button">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="sr-only">Giỏ hàng</span>
+                    </a>
+
+                    <!-- Lấy thông tin người dùng từ HttpContext.Items -->
+                    @if (User.Identity.IsAuthenticated && Context.Items.ContainsKey("UserInfo"))
+                    {
+                        var userInfo = Context.Items["UserInfo"] as dynamic;
+                        if (userInfo != null)
+                        {
+                            <div class="user-dropdown">
+                                <button class="user-avatar" id="userDropdownToggle">
+                                    <img src="@userInfo.AvatarUrl" alt="Avatar" class="avatar-img">
+                                    <span class="user-name">@userInfo.UserName</span>
+                                    <i class="fas fa-chevron-down dropdown-arrow"></i>
+                                </button>
+
+                                <div class="dropdown-menu" id="userDropdownMenu">
+                                    <div class="dropdown-header">
+                                        <img src="@userInfo.AvatarUrl" alt="Avatar" class="dropdown-avatar">
+                                        <div class="dropdown-user-info">
+                                            <h4>@userInfo.UserName</h4>
+                                            <p>@userInfo.Email</p>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="/student/profile" class="dropdown-item">
+                                        <i class="fas fa-user"></i>
+                                        <span>Thông tin cá nhân</span>
+                                    </a>
+                                    @if (userInfo.Role == "Student")
+                                    {
+                                        <a href="/student/mylearning" class="dropdown-item">
+                                            <i class="fas fa-book-open"></i>
+                                            <span>Khóa học của tôi</span>
+                                        </a>
+                                    }
+                                    <a href="/student/account-settings" class="dropdown-item">
+                                        <i class="fas fa-cog"></i>
+                                        <span>Cài đặt tài khoản</span>
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a href="/signout" class="dropdown-item logout">
+                                        <i class="fas fa-sign-out-alt"></i>
+                                        <span>Đăng xuất</span>
+                                    </a>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <a href="/signin" class="btn btn-primary">Đăng nhập</a>
+                        }
+                    }
+                    else
+                    {
+                        <a href="/signin" class="btn btn-primary">Đăng nhập</a>
+                    }
+                </div>
+
+                <div class="mobile-actions">
+                    <a href="cart.html" class="icon-button">
+                        <i class="fas fa-shopping-cart"></i>
+                        <span class="sr-only">Cart</span>
+                    </a>
+                    <a href="/signout" class="icon-button">
+                        <i class="fas fa-user"></i>
+                        <span class="sr-only">Account</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="site-wrapper">
+        <main>
+            @RenderBody()
+        </main>
+
+        <footer class="site-footer">
+            <div class="container">
+                <div class="footer-content">
+                    <p class="copyright">© 2025 EduLearn. All rights reserved.</p>
+                    <div class="footer-links">
+                        <a href="terms.html">Terms</a>
+                        <a href="privacy.html">Privacy</a>
+                        <a href="contact.html">Contact</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <script src="~/js/LayoutStudent.js"></script>
+</body>
+</html>

@@ -1,0 +1,181 @@
+﻿@using WebApplication1.Models
+@{
+    Layout = "/Areas/Student/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/lessonPlayer.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<main class="lesson-player">
+    <!-- Back Button -->
+    <div class="back-button-container">
+        <a href="/student/mylearning" class="back-link">
+            <i class="fas fa-arrow-left"></i>Khóa học của tôi
+            
+        </a>
+        @* <a href="@Url.Action("CoursePage", "Course")" class="back-link"> *@
+        @*     <i class="fas fa-arrow-left"></i> *@
+        @*     Quay lại Khóa Học *@
+        @* </a> *@
+    </div>
+
+    <!-- Course Info Header -->
+    <div class="course-info-header">
+        <h1 class="course-title">@Model.Course.TieuDe</h1>
+        <p class="instructor-name">
+            <i class="fas fa-user-tie"></i>
+			@Model.Course.MaGiaoVienNavigation.HoTen
+        </p>
+    </div>
+
+    <!-- Main Content Area -->
+    <div class="lesson-content">
+        <!-- Video Player Section -->
+        <div class="video-section">
+            <div class="video-player">
+                <video id="lessonVideo" controls poster="">
+                    <source src="@Model.CurrentLesson.LinkVideo" type="video/mp4">
+                    <p>Trình duyệt của bạn không hỗ trợ video HTML5.</p>
+                </video>
+                <div class="video-overlay" id="videoOverlay">
+                    <div class="play-button" id="playButton">
+                        <i class="fas fa-play"></i>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Current Lesson Title -->
+            <div class="current-lesson">
+                <h2 id="currentLessonTitle">Bài @Model.CurrentLesson.ThuTu: @Model.CurrentLesson.TieuDe</h2>
+                <div class="lesson-meta">
+                    <!--<span class="lesson-duration">
+                        <i class="fas fa-clock"></i>
+                        <span id="lessonDuration">10 phút</span>
+                    </span>
+                    <span class="lesson-progress">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Chưa hoàn thành</span>
+                    </span>-->
+                </div>
+            </div>
+        </div>
+
+        <!-- Lesson List Sidebar -->
+        <div class="lesson-sidebar">
+            <div class="sidebar-header">
+                <h3>Danh Sách Bài Học</h3>
+                <span class="lesson-count">>@Model.Lessons.Count bài học</span>
+            </div>
+
+            <div class="lesson-list" id="lessonList">
+                @foreach (var lesson in Model.Lessons)
+                {
+                    <div class="lesson-item @(lesson.ThuTu == Model.CurrentLesson.ThuTu ? "active" : "")"
+                         data-lesson-id="@lesson.MaBaiHoc"
+                         data-video-src="@lesson.LinkVideo">
+                        <div class="lesson-number">@lesson.ThuTu</div>
+                        <div class="lesson-icon">
+                            <i class="fas fa-play-circle"></i>
+                        </div>
+                        <div class="lesson-info">
+                            <h5>@lesson.TieuDe</h5>
+                        </div>
+                        <div class="lesson-status">
+                            <i class="fas fa-circle"></i>
+                        </div>
+                    </div>
+                }
+                
+            </div>
+
+            <!-- Navigation Controls -->
+            <div class="lesson-navigation">
+                <button class="nav-btn prev-btn" id="prevBtn" @(Model.CurrentLesson.ThuTu == 1 ? "disabled" : "")>
+                    <i class="fas fa-chevron-left"></i>
+                    <span>Bài trước</span>
+                </button>
+                <button class="nav-btn next-btn" id="nextBtn" @(Model.CurrentLesson.ThuTu == ((IEnumerable<BaiHoc>)Model.Lessons).Max(l => l.ThuTu) ? "disabled" : "")>
+                    <span>Bài tiếp theo</span>
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const playButton = document.getElementById("playButton");
+        const videoOverlay = document.getElementById("videoOverlay");
+        const video = document.getElementById("lessonVideo");
+        const videoSource = video.querySelector("source");
+        const currentLessonTitle = document.getElementById("currentLessonTitle");
+
+        const lessonItems = Array.from(document.querySelectorAll(".lesson-item"));
+        const nextBtn = document.getElementById("nextBtn");
+        const prevBtn = document.getElementById("prevBtn");
+
+        playButton.addEventListener("click", function () {
+            videoOverlay.style.display = "none";
+            video.play();
+        });
+
+        video.addEventListener("pause", function () {
+            videoOverlay.style.display = "flex";
+        });
+
+        video.addEventListener("play", function () {
+            videoOverlay.style.display = "none";
+        });
+
+
+        function getCurrentIndex() {
+            return lessonItems.findIndex(item => item.classList.contains("active"));
+        }
+
+        function setActiveLesson(index) {
+            if (index < 0 || index >= lessonItems.length) return;
+
+            lessonItems.forEach(item => item.classList.remove("active"));
+
+            const newItem = lessonItems[index];
+            newItem.classList.add("active");
+
+            const newVideoSrc = newItem.getAttribute("data-video-src");
+            const lessonTitle = newItem.querySelector("h5").innerText;
+            const lessonNumber = newItem.querySelector(".lesson-number").innerText;
+
+            video.pause();
+            videoSource.src = newVideoSrc;
+            video.load();
+            video.play();
+
+            currentLessonTitle.innerText = `Bài ${lessonNumber}: ${lessonTitle}`;
+
+            prevBtn.disabled = index === 0;
+            nextBtn.disabled = index === lessonItems.length - 1;
+        }
+
+        nextBtn.addEventListener("click", function () {
+            const currentIndex = getCurrentIndex();
+            setActiveLesson(currentIndex + 1);
+        });
+
+        prevBtn.addEventListener("click", function () {
+            const currentIndex = getCurrentIndex();
+            setActiveLesson(currentIndex - 1);
+        });
+
+        lessonItems.forEach((item, index) => {
+            item.addEventListener("click", () => {
+                setActiveLesson(index);
+            });
+        });
+    });
+</script>
