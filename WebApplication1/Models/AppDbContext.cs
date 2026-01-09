@@ -26,6 +26,7 @@ public partial class AppDbContext : DbContext
     public virtual DbSet<GioHang> GioHangs { get; set; }
 
     public virtual DbSet<HocSinh> HocSinhs { get; set; }
+    public virtual DbSet<MonHoc> MonHocs { get; set; }
 
     public virtual DbSet<KhoaHoc> KhoaHocs { get; set; }
 
@@ -152,6 +153,13 @@ public partial class AppDbContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.PassHash).IsUnicode(false);
         });
+        modelBuilder.Entity<MonHoc>(entity =>
+        {
+            entity.HasKey(e => e.MaMonHoc).HasName("PK_MonHoc");
+            entity.ToTable("MonHoc");
+            entity.Property(e => e.MaMonHoc).HasMaxLength(20);
+            entity.Property(e => e.TenMonHoc).HasMaxLength(100).IsRequired();
+        });
 
         modelBuilder.Entity<KhoaHoc>(entity =>
         {
@@ -169,7 +177,11 @@ public partial class AppDbContext : DbContext
                 .HasColumnType("datetime");
             entity.Property(e => e.ThoiHan).HasDefaultValue(150);
             entity.Property(e => e.TieuDe).HasMaxLength(300);
-
+            entity.HasOne(d => d.MaMonHocNavigation)
+                .WithMany(p => p.KhoaHocs)
+                .HasForeignKey(d => d.MaMonHoc)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_KhoaHoc_MonHoc");
             entity.HasOne(d => d.MaGiaoVienNavigation).WithMany(p => p.KhoaHocs)
                 .HasForeignKey(d => d.MaGiaoVien)
                 .OnDelete(DeleteBehavior.ClientSetNull)

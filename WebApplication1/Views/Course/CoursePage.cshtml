@@ -1,0 +1,136 @@
+﻿@{
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<main>
+    <section class="courses-section">
+        <div class="container">
+            <div class="courses-layout">
+
+                <aside class="filters-sidebar">
+
+                    <form method="get"
+                          action="/student/coursepage"
+                          id="filterForm">
+
+                       <div class="filter-scroll">
+                        <div class="filter-group">
+                            <h3>Tìm Kiếm</h3>
+                            <div class="search-input">
+                                <i class="fas fa-search"></i>
+                                <input type="search"
+                                       name="keyword"
+                                       id="keywordInput"
+                                       placeholder="Tìm kiếm khóa học..."
+                                       value="@Model.Keyword" />
+                            </div>
+                        </div>
+                        <div class="filter-group">
+                            <h3>Sắp xếp</h3>
+                                <select class="sort-select" name="sort" id="sortSelect">
+                                    <option value="">-- Sắp xếp --</option>
+                                    <option value="price-low" selected="@(Model.Sort == "price-low")">
+                                        Giá: Thấp đến Cao
+                                    </option>
+                                    <option value="price-high" selected="@(Model.Sort == "price-high")">
+                                        Giá: Cao đến Thấp
+                                    </option>
+                                </select>
+                        </div>
+                        <!-- SUBJECT -->
+                        <div class="filter-group">
+                            <h3>Môn Học</h3>
+                            <div class="checkbox-list">
+                                @foreach (var subject in Model.Subjects)
+                                {
+                                    <div class="checkbox-item">
+                                        <input type="radio"
+                                               name="maMonHoc"
+                                               value="@subject.MaMonHoc"
+                                               id="sub_@subject.MaMonHoc"
+                                               @(Model.SelectedMaMonHoc == subject.MaMonHoc ? "checked" : "") />
+
+                                        <label for="sub_@subject.MaMonHoc">
+                                            @subject.Subject (@subject.Count)
+                                        </label>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+
+
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">
+                            Áp Dụng Bộ Lọc
+                        </button>
+
+                    </form>
+                </aside>
+
+                <div class="course-listings">
+
+                    <div class="course-grid">
+                        @foreach (var course in Model.FeaturedCourses)
+                        {
+                            <a href="/student/coursedetail/@course.MaKhoaHoc"
+                               class="course-card">
+
+                                <div class="course-image">
+                                    <img src="@course.DuongDanAnhKhoaHoc" alt="@course.TieuDe">
+                                    <span class="badge">@course.MonHoc</span>
+                                </div>
+
+                                <div class="course-content">
+                                    <h3>@course.TieuDe</h3>
+                                    <p>@course.MoTa</p>
+
+                                    <div class="course-meta">
+                                        <div class="meta-item">
+                                            <i class="fas fa-clock"></i>
+                                            <span>@course.ThoiHan ngày</span>
+                                        </div>
+                                        <div class="meta-item">
+                                            <i class="fas fa-users"></i>
+                                            <span>0+ học viên</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="course-footer">
+                                    <div class="course-price">
+                                        @course.GiaKhoaHoc.ToString("N0")₫
+                                    </div>
+                                </div>
+                            </a>
+                        }
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </section>
+</main>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('filterForm');
+        const keywordInput = document.getElementById('keywordInput');
+        const sortSelect = document.getElementById('sortSelect');
+        const subjectRadios  = document.querySelectorAll('input[name="maMonHoc"]')
+
+        if (!form) return;
+
+        keywordInput.addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); 
+                subjectRadios.forEach(radio => radio.checked = false);
+                form.submit();
+            }
+        });
+
+        sortSelect.addEventListener('change', function () {
+            form.submit();
+        });
+    });
+</script>
+

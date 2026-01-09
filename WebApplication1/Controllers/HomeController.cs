@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebApplication1.Models;
-using WebApplication1.ViewModels;
+using WebApplication1.ViewModel;
 
 namespace WebApplication1.Controllers
 {
@@ -33,14 +33,20 @@ namespace WebApplication1.Controllers
                 .ToList();
 
             var subjects = _context.KhoaHocs
-                .GroupBy(k => k.MonHoc)
-                .Select(g => new { Subject = g.Key, Count = g.Count() })
+                .Where(k => k.MaMonHoc != null)
+                .GroupBy(k => k.MaMonHoc)
+                .Select(g => new SubjectInfo { 
+                    Id = g.Key, 
+                    Name = g.FirstOrDefault().MaMonHocNavigation.TenMonHoc, 
+                    CourseCount = g.Count() })
                 .ToList();
 
-            var viewModel = new
+            var viewModel = new HomeViewModel
             {
+
                 FeaturedCourses = featuredCourses,
-                Subjects = subjects
+                Subjects = subjects,
+               
             };
 
             return View(viewModel);
@@ -133,7 +139,7 @@ namespace WebApplication1.Controllers
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                return RedirectToAction("HomePage", "Home", new { area = "Student" });
+                return RedirectToAction("HomePage", "Home");
             }
             else if (model.UserType == "admin")
             {
@@ -171,7 +177,6 @@ namespace WebApplication1.Controllers
 
             if (model.UserType == "student")
             {
-                // Kiểm tra trong bảng HocSinh
                 var hocSinh = await _context.HocSinhs.FirstOrDefaultAsync(h => h.DienThoai == model.DienThoai);
                 if (hocSinh == null)
                 {
@@ -179,7 +184,14 @@ namespace WebApplication1.Controllers
                     return View(model);
                 }
 
-                // Kiểm tra mật khẩu
+                if (!hocSinh.IsActive)
+                {
+                    _logger.LogWarning("Login attempt blocked: Student {HoTen} (ID: {MaHocSinh}) is inactive.", hocSinh.HoTen, hocSinh.MaHocSinh);
+
+                    ModelState.AddModelError("", "Tài khoản của bạn hiện đang bị khóa. Vui lòng liên hệ quản trị viên.");
+                    return View(model);
+                }
+
                 var verificationResult = _passwordHasher.VerifyHashedPassword(null, hocSinh.PassHash, model.Password);
                 if (verificationResult != PasswordVerificationResult.Success)
                 {
@@ -187,13 +199,12 @@ namespace WebApplication1.Controllers
                     return View(model);
                 }
 
-                // Đăng nhập
                 var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, hocSinh.HoTen ?? hocSinh.DienThoai),
-                    new Claim(ClaimTypes.NameIdentifier, hocSinh.MaHocSinh),
-                    new Claim(ClaimTypes.Role, "Student")
-                };
+        {
+            new Claim(ClaimTypes.Name, hocSinh.HoTen ?? hocSinh.DienThoai),
+            new Claim(ClaimTypes.NameIdentifier, hocSinh.MaHocSinh.ToString()), // Đảm bảo ToString() nếu là ID số
+            new Claim(ClaimTypes.Role, "Student")
+        };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties
@@ -204,11 +215,10 @@ namespace WebApplication1.Controllers
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
-                return RedirectToAction("HomePage", "Home", new { area = "Student" });
+                return RedirectToAction("HomePage", "Home");
             }
             else if (model.UserType == "admin")
             {
-                // Kiểm tra trong bảng Admin
                 var admin = await _context.Admins.FirstOrDefaultAsync(a => a.DienThoai == model.DienThoai);
                 if (admin == null)
                 {
@@ -216,7 +226,6 @@ namespace WebApplication1.Controllers
                     return View(model);
                 }
 
-                // Kiểm tra mật khẩu
                 var verificationResult = _passwordHasher.VerifyHashedPassword(null, admin.PassHash, model.Password);
                 if (verificationResult != PasswordVerificationResult.Success)
                 {
@@ -224,13 +233,12 @@ namespace WebApplication1.Controllers
                     return View(model);
                 }
 
-                // Đăng nhập
                 var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, admin.HoTen ?? admin.DienThoai),
-                    new Claim(ClaimTypes.NameIdentifier, admin.MaAdmin),
-                    new Claim(ClaimTypes.Role, "Admin")
-                };
+        {
+            new Claim(ClaimTypes.Name, admin.HoTen ?? admin.DienThoai),
+            new Claim(ClaimTypes.NameIdentifier, admin.MaAdmin.ToString()),
+            new Claim(ClaimTypes.Role, "Admin")
+        };
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var authProperties = new AuthenticationProperties

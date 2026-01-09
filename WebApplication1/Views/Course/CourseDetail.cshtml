@@ -1,0 +1,510 @@
+﻿@model WebApplication1.ViewModel.CoursePageViewModel
+@{
+    ViewData["Title"] = Model.Course.TieuDe + " - EduLearn";
+    Layout = "/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/course-detail.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 18px;
+            background: rgba(255, 255, 255, 0.1); 
+            color: #fff !important;
+            text-decoration: none !important;
+            border-radius: 50px; 
+            font-size: 14px;
+            font-weight: 500;
+            backdrop-filter: blur(5px); 
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-bottom: 25px;
+        }
+
+            .back-link i {
+                transition: transform 0.3s ease;
+            }
+
+            .back-link:hover {
+                background: rgba(255, 255, 255, 0.2);
+                box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+                border-color: rgba(255, 255, 255, 0.4);
+            }
+
+                .back-link:hover i {
+                    transform: translateX(-5px);
+                }
+        .custom-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-backdrop {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7); 
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-wrapper {
+            position: relative;
+            width: 90%;
+            max-width: 960px;
+            background: #000;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+        }
+
+        .modal-header {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 20px;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8), transparent);
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            pointer-events: none; 
+        }
+
+            .modal-header h3 {
+                margin: 0;
+                font-size: 1.2rem;
+                font-weight: 500;
+                text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            }
+
+        .close-modal-btn {
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            pointer-events: auto; 
+            transition: background 0.2s;
+            font-size: 20px;
+        }
+
+            .close-modal-btn:hover {
+                background: rgba(255,255,255,0.2);
+            }
+
+        .video-aspect-ratio {
+            position: relative;
+            padding-bottom: 56.25%; 
+            height: 0;
+            background: #000;
+        }
+
+        #mainVideoPlayer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            outline: none;
+        }
+
+        @@keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            text-align: center;
+            color: white;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255,255,255,0.1);
+            border-top: 3px solid #a435f0;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        .lesson-list-container {
+            background: #fff;
+            border: 1px solid #d1d7dc;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .lesson-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            border-bottom: 1px solid #d1d7dc;
+            transition: background 0.2s ease;
+            cursor: pointer;
+        }
+
+            .lesson-row:last-child {
+                border-bottom: none;
+            }
+
+            .lesson-row:hover {
+                background: #f7f9fa;
+            }
+
+        .lesson-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .lesson-status-icon {
+            color: #6a6f73;
+            font-size: 14px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .lesson-title {
+            color: #2d2f31;
+            font-weight: 500;
+            font-size: 15px;
+        }
+
+        .lesson-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: #6a6f73;
+            font-size: 14px;
+        }
+
+        .badge-preview {
+            color: #5624d0;
+            text-decoration: underline;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+            .badge-preview:hover {
+                color: #401b9c;
+            }
+
+        .lesson-duration {
+            min-width: 50px;
+            text-align: right;
+        }
+
+        .lesson-row.is-previewable {
+            background: #f8f9fb;
+        }
+    </style>
+</head>
+
+<main>
+    <div class="course-header">
+        <div class="container">
+            <a href="@Url.Action("CoursePage", "Course")" class="back-link">
+                <i class="fas fa-arrow-left"></i> Quay lại Khóa Học
+            </a>
+
+            <div class="course-header-content">
+                <div class="course-info">
+                    <span class="badge">@Model.Course.MonHoc</span>
+                    <h1>@Model.Course.TieuDe</h1>
+                    <div class="instructor-preview">
+                        <p class="instructor-name">Giáo viên: @Model.Course.MaGiaoVienNavigation.HoTen</p>
+                    </div>
+
+                    <div class="course-card-mobile">
+                        <div class="course-preview-image">
+                            <img src="@Model.Course.DuongDanAnhKhoaHoc" alt="@Model.Course.TieuDe">
+                        </div>
+                        <div class="course-card-content">
+                            <div class="course-price">@Model.Course.GiaKhoaHoc.ToString("N0")đ</div>
+                            <button class="btn btn-primary btn-block btn-add-to-cart" data-ma-khoa-hoc="@Model.Course.MaKhoaHoc">
+                                <i class="fas fa-shopping-cart"></i> Thêm Vào Giỏ
+                            </button>
+                            <div class="course-guarantees">
+                                <p>Đảm Bảo Hoàn Tiền 30 Ngày</p>
+                                <p>Truy Cập Trọn Đời</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="course-card-desktop">
+                    <div class="course-preview-image">
+                        <img src="@Model.Course.DuongDanAnhKhoaHoc" alt="@Model.Course.TieuDe">
+                        <div class="preview-overlay">
+                            @{
+                                var firstLesson = Model.Course.BaiHocs.OrderBy(b => b.ThuTu).FirstOrDefault();
+                            }
+                            <button class="btn btn-outline-light btn-open-preview"
+                                    data-lesson-id="@firstLesson?.MaBaiHoc"
+                                    data-course-title="@Model.Course.TieuDe">
+                                <i class="fas fa-play-circle"></i> Xem Trước Khóa Học
+                            </button>
+                        </div>
+                    </div>
+                    <div class="course-card-content">
+                        <div class="course-price">@Model.Course.GiaKhoaHoc.ToString("N0")đ</div>
+
+                        @if (Model.InCourse == "false")
+                        {
+                            <button class="btn btn-primary btn-block btn-add-to-cart" data-ma-khoa-hoc="@Model.Course.MaKhoaHoc">
+                                <i class="fas fa-shopping-cart"></i> Thêm Vào Giỏ
+                            </button>
+                        }
+                        else if (Model.InCourse == "inYourCart")
+                        {
+                            <button class="btn btn-block btn-in-cart" disabled>Đã có trong giỏ hàng</button>
+                        }
+                        else
+                        {
+                            <button class="btn btn-block btn-in-course" disabled>Đã sở hữu khóa học</button>
+                        }
+
+                        <div class="course-guarantees">
+                            <p><i class="fas fa-history"></i> Đảm Bảo Hoàn Tiền 30 Ngày</p>
+                            <p><i class="fas fa-infinity"></i> Truy Cập Trọn Đời</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="videoPreviewModal" class="custom-modal">
+                    <div class="modal-backdrop"></div>
+                    <div class="modal-wrapper">
+                        <div class="modal-header">
+                            <h3 id="modalVideoTitle">Tiêu đề video</h3>
+                            <button class="close-modal-btn">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="video-aspect-ratio">
+                                <div id="videoLoader" class="loader-container">
+                                    <div class="spinner"></div>
+                                </div>
+                                <video id="mainVideoPlayer" controls controlsList="nodownload">
+                                    <source id="videoSource" src="" type="video/mp4">
+                                </video>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="course-content-section">
+        <div class="container">
+            <div class="course-tabs">
+                <div class="tabs">
+                    <button class="tab-button active" data-tab="overview">Tổng Quan</button>
+                    <button class="tab-button" data-tab="curriculum">Bài Học</button>
+                </div>
+
+                <div class="tab-content active" id="overview">
+                    <div class="tab-content-layout">
+                        <div class="main-content">
+                            <h2>Bạn sẽ học được gì</h2>
+                            <div class="learning-outcomes">
+                                @foreach (var outcome in Model.Course.MucTieuKhoaHocs.OrderBy(m => m.ThuTu))
+                                {
+                                    <div class="outcome-item">
+                                        <i class="fas fa-check-circle"></i>
+                                        <span>@outcome.NoiDung</span>
+                                    </div>
+                                }
+                            </div>
+                            <h2>Mô Tả Khóa Học</h2>
+                            <div class="course-description">
+                                @foreach (var paragraph in Model.Course.MoTa.Split(new[] { "\r\n", "\n" }, StringSplitOptions.None))
+                                {
+                                    <p>@paragraph</p>
+                                }
+                            </div>
+                        </div>
+                        <div class="sidebar-content">
+                            <div class="course-includes-card">
+                                <h3>Khóa học này bao gồm:</h3>
+                                <div class="includes-list">
+                                    @foreach (var include in Model.Includes)
+                                    {
+                                        <div class="includes-item">
+                                            <i class="fas fa-@(include.Contains("video") ? "play-circle" : include.Contains("tài liệu") ? "download" : "certificate")"></i>
+                                            <span>@include</span>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-content" id="curriculum">
+                    <div class="curriculum-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h2 style="margin: 0;">Nội Dung Khóa Học</h2>
+                        <span style="color: #6a6f73; font-size: 14px;">@Model.Course.BaiHocs.Count bài học</span>
+                    </div>
+
+                    <div class="lesson-list-container">
+                        @foreach (var lesson in Model.Course.BaiHocs.OrderBy(b => b.ThuTu))
+                        {
+                            <div class="lesson-row @(lesson.ThuTu <= 2 ? "is-previewable" : "")">
+                                <div class="lesson-left">
+                                    <div class="lesson-status-icon">
+                                        <i class="fas fa-play-circle"></i>
+                                    </div>
+                                    <span class="lesson-title">@lesson.ThuTu. @lesson.TieuDe</span>
+                                </div>
+
+                                <div class="lesson-right">
+                                    @if (lesson.ThuTu <= 2) 
+                                    {
+                                        <span class="badge-preview btn-open-preview"
+                                              data-lesson-id="@lesson.MaBaiHoc"
+                                              data-course-title="@lesson.TieuDe">
+                                            Xem thử
+                                        </span>
+                                    }
+                                    else
+                                    {
+                                        <i class="fas fa-lock" style="font-size: 12px; opacity: 0.5;"></i>
+                                    }
+                                    <span class="lesson-duration">05:00</span> @* Thay bằng thời lượng thật nếu có *@
+                                </div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<input type="hidden" id="isLoggedInStatus" value="@(User.Identity.IsAuthenticated ? "true" : "false")" />
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        const currentStatus = $('#isLoggedInStatus').val() === 'true';
+
+        // 1. Logic Tabs
+        $('.tab-button').on('click', function () {
+            $('.tab-button').removeClass('active');
+            $(this).addClass('active');
+            const tabId = $(this).data('tab');
+            $('.tab-content').removeClass('active');
+            $(`#${tabId}`).addClass('active');
+        });
+
+        // 2. Logic Thêm vào giỏ hàng
+        $('.btn-add-to-cart').on('click', function (e) {
+            e.stopPropagation();
+            const maKhoaHoc = $(this).data('ma-khoa-hoc');
+
+            if (!currentStatus) {
+                if (confirm('Bạn cần đăng nhập để thêm vào giỏ hàng. Đi tới trang đăng nhập?')) {
+                    window.location.href = '/signin';
+                }
+                return;
+            }
+
+            $.post('/student/addtocart', { maKhoaHoc: maKhoaHoc }, function (response) {
+                if (response.success) {
+                    $('.btn-add-to-cart').addClass('btn-in-cart').prop('disabled', true).text('Đã có trong giỏ hàng');
+                } else {
+                    alert(response.message);
+                }
+            });
+
+
+            $('.lesson-row.is-previewable').on('click', function(e) {
+                
+                if (!$(e.target).hasClass('badge-preview')) {
+                    $(this).find('.badge-preview').click();
+                }
+    });
+
+        });
+
+        // 3. Logic Video Modal (Cloudinary)
+        const $modal = $('#videoPreviewModal');
+        const videoPlayer = document.getElementById('mainVideoPlayer');
+        const $videoSource = $('#videoSource');
+        const $loader = $('#videoLoader');
+
+        $('.btn-open-preview').on('click', function (e) {
+            e.preventDefault();
+            const lessonId = $(this).data('lesson-id');
+            const title = $(this).data('course-title');
+
+            if (!lessonId) return alert("Khóa học chưa có bài học để xem thử.");
+
+            $('#modalVideoTitle').text("Xem trước: " + title);
+            $modal.css('display', 'flex').hide().fadeIn(300);
+            $loader.show();
+            $(videoPlayer).hide();
+
+            // Ajax lấy link Cloudinary từ server
+            $.get(`/student/getlessonpreview/${lessonId}`, function (data) {
+                if (data && data.videoUrl) {
+                    $videoSource.attr('src', data.videoUrl);
+                    videoPlayer.load();
+
+                    videoPlayer.oncanplay = function() {
+                        $loader.hide();
+                        $(videoPlayer).show();
+                        videoPlayer.play();
+                    };
+                } else {
+                    alert("Không tìm thấy video.");
+                    $modal.fadeOut();
+                }
+            });
+        });
+
+        function closePreview() {
+            $modal.fadeOut(200);
+            videoPlayer.pause();
+            $videoSource.attr('src', '');
+        }
+
+        $('.close-modal-btn, .modal-backdrop').on('click', closePreview);
+        $(document).keyup(function(e) { if (e.key === "Escape") closePreview(); });
+    });
+</script>

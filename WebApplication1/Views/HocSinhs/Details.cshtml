@@ -1,0 +1,154 @@
+﻿@model WebApplication1.Models.HocSinh
+
+@{
+    ViewData["Title"] = "Chi tiết Học viên";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .profile-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        border: none;
+        overflow: hidden;
+        margin-top: 20px;
+    }
+
+    .profile-header {
+        margin-top: 20px;
+        background: linear-gradient(135deg, #2557e0 0%, #1a44b8 100%);
+        padding: 40px 30px;
+        color: white;
+        text-align: center;
+    }
+
+    .profile-avatar-large {
+        width: 130px;
+        height: 130px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 5px solid rgba(255,255,255,0.2);
+        margin-bottom: 15px;
+    }
+
+    .details-body {
+        padding: 40px;
+    }
+
+    .info-section-title {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #2557e0;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+
+    /* Grid thông tin */
+    .info-row {
+        display: flex;
+        padding: 12px 0;
+        border-bottom: 1px solid #fafafa;
+    }
+
+    .info-label {
+        width: 35%;
+        font-weight: 600;
+        color: #6c757d;
+    }
+
+    .info-value {
+        width: 65%;
+        color: #212529;
+    }
+
+    .profile-actions {
+        padding: 20px 40px;
+        background: #f8f9fa;
+        display: flex;
+        gap: 10px;
+    }
+
+    .btn-edit-profile {
+        background-color: #2557e0;
+        color: white !important;
+        border-radius: 8px;
+        padding: 10px 25px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+        .btn-edit-profile:hover {
+            background-color: #1a44b8;
+            box-shadow: 0 4px 12px rgba(37, 87, 224, 0.2);
+        }
+
+    .btn-back-list {
+        background-color: #e9ecef;
+        color: #495057 !important;
+        border-radius: 8px;
+        padding: 10px 25px;
+        font-weight: 600;
+        text-decoration: none;
+    }
+</style>
+
+<div class="container py-4 mt-4">
+    <div class="profile-card">
+        <div class="profile-header  mt-5">
+            <img src="@(string.IsNullOrEmpty(Model.DuongDanAnhDaiDien) ? "/images/default-avatar.png" : Model.DuongDanAnhDaiDien)"
+                 class="profile-avatar-large" alt="Avatar" />
+            <h2 class="mb-1">@Model.HoTen</h2>
+            <p class="mb-0 opacity-75">Mã số: #@Model.MaHocSinh</p>
+        </div>
+
+        <div class="details-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5 class="info-section-title"><i class="fas fa-user me-2"></i> Thông tin cơ bản</h5>
+                    <div class="info-row">
+                        <div class="info-label">Giới tính</div>
+                        <div class="info-value">@Model.GioiTinh</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Ngày sinh</div>
+                        <div class="info-value">@Model.NgaySinh?.ToString("dd/MM/yyyy")</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Ngày đăng ký</div>
+                        <div class="info-value text-muted">@Model.NgayDangKy.ToString("dd/MM/yyyy HH:mm")</div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h5 class="info-section-title"><i class="fas fa-address-book me-2"></i> Liên lạc & Địa chỉ</h5>
+                    <div class="info-row">
+                        <div class="info-label">Email</div>
+                        <div class="info-value fw-bold">@Model.Email</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Điện thoại</div>
+                        <div class="info-value">@Model.DienThoai</div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-label">Địa chỉ</div>
+                        <div class="info-value">@Model.DiaChi</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="profile-actions">
+            <a asp-action="Edit" asp-route-id="@Model?.MaHocSinh" class="btn-edit-profile">
+                <i class="fas fa-edit me-2"></i> Chỉnh sửa hồ sơ
+            </a>
+            <a asp-action="Index" class="btn-back-list">
+                <i class="fas fa-list me-2"></i> Danh sách
+            </a>
+        </div>
+    </div>
+</div>

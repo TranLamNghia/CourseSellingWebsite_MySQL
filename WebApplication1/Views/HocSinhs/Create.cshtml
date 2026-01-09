@@ -1,0 +1,261 @@
+﻿@model WebApplication1.Models.HocSinh
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Thêm học viên mới";
+}
+
+<style>
+    .form-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid #eee;
+        max-width: 850px;
+        margin: 20px auto;
+    }
+
+    .control-label {
+        font-weight: 600;
+        color: #495057;
+        margin-bottom: 8px;
+    }
+
+    .img-preview-container {
+        text-align: center;
+        border: 2px dashed #ddd;
+        padding: 10px;
+        border-radius: 10px;
+        background: #fafafa;
+    }
+
+    #imgPreview {
+        max-height: 180px;
+        border-radius: 8px;
+        display: none;
+        margin: 10px auto;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+
+    /* CUSTOM SWITCH CSS - Đảm bảo hiển thị nút gạt */
+    .custom-switch {
+        position: relative;
+        display: inline-block;
+        width: 54px;
+        height: 28px;
+    }
+
+        .custom-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 20px;
+            width: 20px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+    .custom-switch input:checked + .slider {
+        background-color: #2557e0;
+    }
+
+        .custom-switch input:checked + .slider:before {
+            transform: translateX(30px);
+        }
+
+    .ios-switch {
+        position: relative;
+        display: inline-block;
+        width: 52px;
+        height: 28px;
+        cursor: pointer;
+    }
+
+        .ios-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+    .ios-slider {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #e9e9ea; 
+        transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 34px;
+        border: 1px solid #d1d1d6;
+    }
+
+        .ios-slider:before {
+            position: absolute;
+            content: "";
+            height: 24px;
+            width: 24px;
+            left: 1px;
+            bottom: 1px;
+            background-color: white;
+            transition: .3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 50%;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
+            z-index: 2;
+        }
+
+    .ios-switch input:checked + .ios-slider {
+        background-color: #34c759; 
+        border-color: #34c759;
+    }
+
+        .ios-switch input:checked + .ios-slider:before {
+            transform: translateX(24px);
+        }
+
+    .ios-switch:active .ios-slider:before {
+        width: 28px;
+    }
+    input:checked + .slider {
+        background-color: #2557e0;
+    }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+    .space{
+        margin: 8px 0;
+    }
+</style>
+
+<div class="container py-4 mt-5">
+    <div class="form-card">
+        <h2 class="text-center fw-bold mb-4 text-primary">Đăng Ký Học Viên Mới</h2>
+
+        <form asp-action="Create" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="form-group mb-3">
+                        <label asp-for="HoTen" class="control-label">Họ và tên</label>
+                        <input asp-for="HoTen" class="form-control form-control-lg" placeholder="Nhập họ tên đầy đủ..." />
+                        <span asp-validation-for="HoTen" class="text-danger small"></span>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="Email" class="control-label">Email</label>
+                            <input asp-for="Email" class="form-control" placeholder="email@gmail.com" />
+                            <span asp-validation-for="Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label asp-for="DienThoai" class="control-label">Điện thoại</label>
+                            <input asp-for="DienThoai" class="form-control" placeholder="090..." />
+                            <span asp-validation-for="DienThoai" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label asp-for="PassHash" class="control-label">Mật khẩu khởi tạo</label>
+                        <input asp-for="PassHash" type="password" class="form-control" placeholder="Nhập mật khẩu..." />
+                        <span asp-validation-for="PassHash" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-5">
+                    <div class="form-group mb-3">
+                        <label class="control-label">Ảnh đại diện</label>
+                        <div class="img-preview-container">
+                            <img id="imgPreview" src="#" />
+                            <div id="uploadPlaceholder" class="py-4 text-muted">
+                                <i class="fas fa-cloud-upload-alt fa-3x d-block mb-2"></i>
+                                <small>Chưa chọn ảnh</small>
+                            </div>
+                            <input type="file" name="AnhDaiDien" class="form-control mt-2" accept="image/*" onchange="readURL(this);" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-2">
+                <div class="col-md-4 mb-3">
+                    <label asp-for="NgaySinh" class="control-label">Ngày sinh</label>
+                    <input asp-for="NgaySinh" type="date" class="form-control" />
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="GioiTinh" class="control-label">Giới tính</label>
+                    <select asp-for="GioiTinh" class="form-control">
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                        <option value="Khác">Khác</option>
+                    </select>
+                </div>
+                <div class="col-md-4 mb-3">
+                    <label asp-for="DiaChi" class="control-label">Địa chỉ</label>
+                    <input asp-for="DiaChi" class="form-control" placeholder="Tỉnh/Thành phố..." />
+                </div>
+            </div>
+
+            <div class="mb-4 p-3 border rounded-3 bg-light d-flex align-items-center justify-content-between space">
+                <div>
+                    <label class="h6 mb-0 d-block fw-bold">Kích hoạt tài khoản ngay</label>
+                    <span class="small text-muted">Cho phép học viên đăng nhập ngay sau khi thêm</span>
+                </div>
+                <label class="ios-switch">
+                    <input type="checkbox" asp-for="IsActive" id="activeSwitch">
+                    <span class="ios-slider"></span>
+                </label>
+            </div>
+                
+            <div class="row g-2">
+                <div class="col-md-8">
+                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold">
+                        <i class="fas fa-plus-circle me-2"></i>XÁC NHẬN THÊM MỚI
+                    </button>
+                </div>
+                <div class="col-md-4">
+                    <a asp-action="Index" class="btn btn-outline-secondary w-100 py-3">HỦY BỎ</a>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function readURL(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    $('#uploadPlaceholder').hide();
+                    $('#imgPreview').attr('src', e.target.result).fadeIn();
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

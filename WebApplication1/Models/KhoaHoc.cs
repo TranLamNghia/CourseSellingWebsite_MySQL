@@ -20,6 +20,7 @@ public partial class KhoaHoc
     public int ThoiHan { get; set; }
 
     public string MaGiaoVien { get; set; } = null!;
+    public string? MaMonHoc { get; set; }
 
     public DateTime NgayCapNhat { get; set; }
 
@@ -30,6 +31,8 @@ public partial class KhoaHoc
     public virtual ICollection<KhoaHocHocSinh> KhoaHocHocSinhs { get; set; } = new List<KhoaHocHocSinh>();
 
     public virtual GiaoVien MaGiaoVienNavigation { get; set; } = null!;
+
+    public virtual MonHoc? MaMonHocNavigation { get; set; }
 
     public virtual ICollection<MucTieuKhoaHoc> MucTieuKhoaHocs { get; set; } = new List<MucTieuKhoaHoc>();
 

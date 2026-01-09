@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using WebApplication1.Areas.Student.Middleware;
-using WebApplication1.Areas.Student.Services;
 using WebApplication1.Models;
 using WebApplication1.Services;
 
@@ -34,6 +33,9 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.LogoutPath = "/signout"; // Trang đăng xuất
         options.AccessDeniedPath = "/access-denied"; // Trang khi không có quyền truy cập
         options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Thời gian hết hạn của cookie
+
+        options.Cookie.IsEssential = true;
+        options.SlidingExpiration = true;
     });
 
 builder.Services.AddLogging(logging =>

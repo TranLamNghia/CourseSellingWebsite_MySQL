@@ -1,4 +1,4 @@
-﻿@model WebApplication1.Areas.Student.ViewModels.CoursePageViewModel
+﻿@* @model WebApplication1.Areas.Student.ViewModels.CoursePageViewModel
 @{
     ViewData["Title"] = Model.Course.TieuDe + " - EduLearn";
     Layout = "/Areas/Student/Views/Shared/_Layout.cshtml";
@@ -210,6 +210,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    const isAuthenticated = @(User.Identity.IsAuthenticated.ToString().ToLower());
     document.addEventListener("DOMContentLoaded", function () {
         const tabButtons = document.querySelectorAll(".tab-button");
         const tabContents = document.querySelectorAll(".tab-content");
@@ -245,6 +246,13 @@
         $('.btn-add-to-cart').on('click', function () {
             const maKhoaHoc = $(this).data('ma-khoa-hoc');
 
+            if (!isAuthenticated) {
+                if (confirm('Bạn cần đăng nhập để thêm khóa học vào giỏ hàng. Đăng nhập ngay?')) {
+                    window.location.href = '/signin';
+                }
+                return;
+            }
+
             $.ajax({
                 url: '/student/addtocart',
                 type: 'POST',
@@ -268,4 +276,4 @@
         });
     });
 
-</script>
+</script> *@

@@ -1,4 +1,6 @@
-﻿<main>
+﻿@model WebApplication1.ViewModel.HomeViewModel
+
+<main>
     <!-- Hero Section -->
     <section class="hero">
         <div class="container">
@@ -31,39 +33,30 @@
             <div class="course-grid">
                 @foreach (var course in Model.FeaturedCourses)
                 {
-                    <a href="" class="course-card">
+                    <a asp-controller="Course" asp-action="CourseDetail" asp-route-id="@course.MaKhoaHoc" class="course-card">
                         <div class="course-image">
                             <img src="@course.DuongDanAnhKhoaHoc" alt="@course.TieuDe">
                             <span class="badge">@course.MonHoc</span>
                         </div>
                         <div class="course-content">
                             <h3>@course.TieuDe</h3>
-                            <p>@course.MoTa</p>
+                            <p>@(course.MoTa.Length > 120 ? course.MoTa.Substring(0, 117) + "..." : course.MoTa)</p>
                             <div class="course-meta">
                                 <div class="meta-item">
                                     <i class="fas fa-clock"></i>
                                     <span>@course.ThoiHan ngày</span>
                                 </div>
                                 <div class="meta-item">
-                                    <i class="fas fa-book-open"></i>
-                                    <span>50 bài học</span>
-                                </div>
-                                <div class="meta-item">
-                                    <i class="fas fa-users"></i>
-                                    <span>0+ học viên</span> <!-- Có thể cần bảng thống kê học viên -->
+                                    <i class="fas fa-chalkboard-teacher"></i>
+                                    <span>@course.MaGiaoVienNavigation?.HoTen</span>
                                 </div>
                             </div>
                         </div>
                         <div class="course-footer">
                             <div class="course-rating">
                                 <div class="stars">
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star"></i>
-                                    <i class="fas fa-star-half-alt"></i>
+                                    <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
                                 </div>
-                                <span>(0)</span> <!-- Có thể cần bảng đánh giá -->
                             </div>
                             <div class="course-price">@course.GiaKhoaHoc.ToString("N0")₫</div>
                         </div>
@@ -85,31 +78,16 @@
                 <p>Tìm khóa học hoàn hảo trong môn học bạn quan tâm.</p>
             </div>
             <div class="categories-grid">
-                @{
-                    int i = 0;
-                }
-                @foreach (var subject in Model.Subjects)
+                @foreach (var sub in Model.Subjects)
                 {
-                    if (i >= 10) break;
-                    i++;
-                    <a href="" class="category-card">
-						<div class="category-icon">
-							<i class="fas fa-book"></i>
-						</div>
-						<h3>@subject.Subject</h3>
-                        <p>@subject.Count khóa học</p>
-					</a>
-				}
-                <!-- Category 1 -->
-                @* <a href="categories.html" class="category-card"> *@
-                @*     <div class="category-icon"> *@
-                @*         <i class="fas fa-code"></i> *@
-                @*     </div> *@
-                @*     <h3>Lập Trình</h3> *@
-                @*     <p>120 khóa học</p> *@
-                @* </a> *@
-
-                
+                    <a asp-controller="Course" asp-action="CoursePage" asp-route-maMonHoc="@sub.Id" class="category-card">
+                        <div class="category-icon">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <h3>@sub.Name</h3>
+                        <p>@sub.CourseCount khóa học</p>
+                    </a>
+                }
             </div>
         </div>
     </section>
@@ -190,8 +168,8 @@
                 <h2>Sẵn Sàng Bắt Đầu Học?</h2>
                 <p>Tham gia cùng hàng ngàn học viên và bắt đầu hành trình học tập của bạn ngay hôm nay.</p>
                 <div class="cta-buttons">
-                    <a href="courses.html" class="btn btn-light">Xem Khóa Học</a>
-                    <a href="my-learning.html" class="btn btn-outline-light">Khóa Học Của Tôi</a>
+                    <a asp-controller="Course" asp-action="CoursePage" class="btn btn-light">Xem Khóa Học</a>
+                    <a asp-controller="Account" asp-action="MyLearning"  class="btn btn-outline-light">Khóa Học Của Tôi</a>
                 </div>
             </div>
         </div>

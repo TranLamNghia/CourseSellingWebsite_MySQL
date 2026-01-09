@@ -24,6 +24,7 @@ public partial class HocSinh
     public string? DiaChi { get; set; }
 
     public DateTime NgayDangKy { get; set; }
+    public bool IsActive { get; set; } = true;
 
     public virtual ICollection<GioHang> GioHangs { get; set; } = new List<GioHang>();
 

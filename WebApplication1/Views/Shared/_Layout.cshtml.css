@@ -2,47 +2,88 @@
 for details on configuring this project to bundle and minify static web assets. */
 
 a.navbar-brand {
-  white-space: normal;
-  text-align: center;
-  word-break: break-all;
+    white-space: normal;
+    text-align: center;
+    word-break: break-all;
 }
 
 a {
-  color: #0077cc;
+    color: #0077cc;
 }
 
 .btn-primary {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 .nav-pills .nav-link.active, .nav-pills .show > .nav-link {
-  color: #fff;
-  background-color: #1b6ec2;
-  border-color: #1861ac;
+    color: #fff;
+    background-color: #1b6ec2;
+    border-color: #1861ac;
 }
 
 .border-top {
-  border-top: 1px solid #e5e5e5;
+    border-top: 1px solid #e5e5e5;
 }
+
 .border-bottom {
-  border-bottom: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .box-shadow {
-  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+    box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
 }
 
 button.accept-policy {
-  font-size: 1rem;
-  line-height: inherit;
+    font-size: 1rem;
+    line-height: inherit;
 }
 
 .footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  line-height: 60px;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+}
+
+.filters-sidebar {
+    height: 100vh; /* Giữ nguyên chiều cao màn hình */
+    position: sticky;
+    top: 0;
+    display: flex;
+    flex-direction: column; /* Sắp xếp theo chiều dọc */
+    background: #fff;
+    border-right: 1px solid #eee; /* Thêm đường kẻ cho đẹp */
+    padding: 15px; /* Thêm padding nếu chưa có */
+}
+
+#filterForm {
+    display: flex;
+    flex-direction: column;
+    height: 100%; /* Form chiếm toàn bộ chiều cao của Sidebar */
+}
+
+.filter-scroll {
+    flex: 1; /* Chiếm tối đa không gian còn trống */
+    overflow-y: auto; /* Chỉ cho phép cuộn ở phần này */
+    margin-bottom: 15px; /* Khoảng cách với cái nút */
+    padding-right: 5px; /* Tránh scrollbar đè lên chữ */
+}
+
+    /* Tùy chỉnh thanh cuộn cho đẹp hơn */
+    .filter-scroll::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .filter-scroll::-webkit-scrollbar-thumb {
+        background: #ccc;
+        border-radius: 10px;
+    }
+
+.btn-block {
+    flex-shrink: 0; /* Đảm bảo nút không bị co nhỏ lại */
+    margin-top: auto; /* Luôn đẩy nút xuống dưới cùng */
+    width: 100%;
 }

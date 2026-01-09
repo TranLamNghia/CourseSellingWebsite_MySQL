@@ -1,123 +1,160 @@
-﻿using System.Security.Claims;
-using CloudinaryDotNet;
-using CloudinaryDotNet.Actions;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json.Linq;
-using WebApplication1.Areas.Student.ViewModels;
-using WebApplication1.Models;
+﻿//using System.Security.Claims;
+//using CloudinaryDotNet;
+//using CloudinaryDotNet.Actions;
+//using Microsoft.AspNetCore.Authorization;
+//using Microsoft.AspNetCore.Mvc;
+//using Microsoft.EntityFrameworkCore;
+//using Newtonsoft.Json.Linq;
+//using WebApplication1.Areas.Student.ViewModels;
+//using WebApplication1.Models;
 
-namespace WebApplication1.Areas.Student.Controllers
-{
-    [Area("Student")]
-    [Authorize(Roles = "Student")]
-    public class CourseController : Controller
-    {
-        private readonly AppDbContext _context;
-        private readonly Cloudinary _cloudinary;
+//namespace WebApplication1.Areas.Student.Controllers
+//{
+//    [Area("Student")]
+//    //[Authorize(Roles = "Student")]
+//    public class CourseController : Controller
+//    {
+//        private readonly AppDbContext _context;
+//        private readonly Cloudinary _cloudinary;
 
-        public CourseController(AppDbContext context, Cloudinary cloudinary)
-        {
-            _context = context;
-            _cloudinary = cloudinary;
-        }
+//        public CourseController(AppDbContext context, Cloudinary cloudinary)
+//        {
+//            _context = context;
+//            _cloudinary = cloudinary;
+//        }
 
-        [HttpGet]
-        [Route("/student/coursepage")]
-        public IActionResult CoursePage()
-        {
-            var featuredCourses = _context.KhoaHocs
-                .Include(k => k.MaGiaoVienNavigation)
-                .ToList();
+//        [HttpGet]
+//        [Route("/student/coursepage")]
+//        public IActionResult CoursePage(string? maMonHoc, string? keyword, string? sort)
+//        {
+//            var khoaHocQuery = _context.KhoaHocs
+//                .Include(k => k.MaGiaoVienNavigation).AsQueryable();
 
-            var subjects = _context.KhoaHocs
-                .GroupBy(k => k.MonHoc)
-                .Select(g => new { Subject = g.Key, Count = g.Count() })
-                .ToList();
+//            //var subjects = _context.KhoaHocs
+//            //    .GroupBy(k => k.MonHoc)
+//            //    .Select(g => new { Subject = g.Key, Count = g.Count() })
+//            //    .ToList();
 
-            var viewModel = new
-            {
-                FeaturedCourses = featuredCourses,
-                Subjects = subjects
-            };
+//            //var subjects = _context.MonHocs
+//            //    .Select(mh => new
+//            //    {
+//            //        Subject = mh.TenMonHoc,
+//            //        Count = _context.KhoaHocs.Count(kh => kh.MaMonHoc == mh.MaMonHoc)
+//            //    })
+//            //    .ToList();
 
-            return View(viewModel);
-        }
+//            if (!string.IsNullOrEmpty(maMonHoc))
+//            {
+//                khoaHocQuery = khoaHocQuery.Where(kh => kh.MaMonHoc == maMonHoc);
+//            }
 
-        [HttpGet]
-        [Route("/student/coursedetail/{id}")]
-        public async Task<IActionResult> CourseDetail(string id)
-        {
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+//            if (!string.IsNullOrEmpty(keyword))
+//            {
+//                khoaHocQuery = khoaHocQuery.Where(c =>
+//                    c.TieuDe.Contains(keyword));
+//            }
 
-            var course = await _context.KhoaHocs
-                .Include(c => c.MaGiaoVienNavigation)
-                .Include(c => c.MucTieuKhoaHocs)
-                .Include(c => c.YeuCauKhoaHocs)
-                .Include(c => c.BaiHocs)
-                .FirstOrDefaultAsync(c => c.MaKhoaHoc == id);
+//            khoaHocQuery = sort switch
+//            {
+//                "price-low" => khoaHocQuery.OrderBy(c => c.GiaKhoaHoc),
+//                "price-high" => khoaHocQuery.OrderByDescending(c => c.GiaKhoaHoc),
+//                _ => khoaHocQuery
+//            };
+//            var featuredCourses = khoaHocQuery.ToList();
 
-            if (course == null)
-            {
-                return NotFound();
-            }
+//            var subjects = _context.MonHocs
+//            .Select(mh => new
+//            {
+//                MaMonHoc = mh.MaMonHoc,
+//                Subject = mh.TenMonHoc,
+//                Count = _context.KhoaHocs.Count(kh => kh.MaMonHoc == mh.MaMonHoc)
+//            })
+//            .ToList();
 
-            // Lấy các khóa học liên quan (cùng MonHoc, không bao gồm khóa học hiện tại)
-            var relatedCourses = await _context.KhoaHocs
-                .Where(c => c.MonHoc == course.MonHoc && c.MaKhoaHoc != id)
-                .Take(4)
-                .ToListAsync();
+//            var viewModel = new
+//            {
+//                FeaturedCourses = featuredCourses,
+//                Subjects = subjects,
+//                SelectedMaMonHoc = maMonHoc,
+//                Keyword = keyword,
+//                Sort = sort
+//            };
 
-            // Dữ liệu tĩnh
-            var includes = new List<string>
-            {
-                "65 giờ video theo yêu cầu",
-                "85 tài liệu có thể tải xuống",
-                "Truy cập trọn đời",
-                "Chứng chỉ hoàn thành"
-            };
+//            return View(viewModel);
+//        }
 
-            string inCourse = "false";
-            if (!string.IsNullOrEmpty(userId))
-            {
-                var isInYourCourse = await _context.KhoaHocHocSinhs
-            .AnyAsync(khhs => khhs.MaHocSinh == userId && khhs.MaKhoaHoc == id);
+//        [HttpGet]
+//        [Route("/student/coursedetail/{id}")]
+//        public async Task<IActionResult> CourseDetail(string id)
+//        {
+//            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-                if (isInYourCourse)
-                {
-                    inCourse = "inYourCourse";
-                }
-                else
-                {
-                    var gioHang = await _context.GioHangs
-                        .FirstOrDefaultAsync(gh => gh.MaHocSinh == userId);
+//            var course = await _context.KhoaHocs
+//                .Include(c => c.MaGiaoVienNavigation)
+//                .Include(c => c.MucTieuKhoaHocs)
+//                .Include(c => c.YeuCauKhoaHocs)
+//                .Include(c => c.BaiHocs)
+//                .FirstOrDefaultAsync(c => c.MaKhoaHoc == id);
 
-                    if (gioHang != null)
-                    {
-                        var query = _context.ChiTietGioHangs
-                            .Where(ctgh => ctgh.MaGioHang == gioHang.MaGioHang && ctgh.MaKhoaHoc == id);
-                        var inCart = await query.AnyAsync();
+//            if (course == null)
+//            {
+//                return NotFound();
+//            }
 
-                        if (inCart)
-                        {
-                            inCourse = "inYourCart";
-                        }
-                    }
-                }
-            }
+//            var relatedCourses = await _context.KhoaHocs
+//                .Where(c => c.MonHoc == course.MonHoc && c.MaKhoaHoc != id)
+//                .Take(4)
+//                .ToListAsync();
 
-            // Tạo view model
-            var viewModel = new CoursePageViewModel
-            {
-                Course = course,
-                RelatedCourses = relatedCourses,
-                Includes = includes,
-                InCourse = inCourse
-            };
+//            // Dữ liệu tĩnh
+//            var includes = new List<string>
+//            {
+//                "65 giờ video theo yêu cầu",
+//                "85 tài liệu có thể tải xuống",
+//                "Truy cập trọn đời",
+//                "Chứng chỉ hoàn thành"
+//            };
 
-            return View(viewModel);
-        }
+//            string inCourse = "false";
+//            if (!string.IsNullOrEmpty(userId))
+//            {
+//                var isInYourCourse = await _context.KhoaHocHocSinhs
+//            .AnyAsync(khhs => khhs.MaHocSinh == userId && khhs.MaKhoaHoc == id);
 
-    }
-}
+//                if (isInYourCourse)
+//                {
+//                    inCourse = "inYourCourse";
+//                }
+//                else
+//                {
+//                    var gioHang = await _context.GioHangs
+//                        .FirstOrDefaultAsync(gh => gh.MaHocSinh == userId);
+
+//                    if (gioHang != null)
+//                    {
+//                        var query = _context.ChiTietGioHangs
+//                            .Where(ctgh => ctgh.MaGioHang == gioHang.MaGioHang && ctgh.MaKhoaHoc == id);
+//                        var inCart = await query.AnyAsync();
+
+//                        if (inCart)
+//                        {
+//                            inCourse = "inYourCart";
+//                        }
+//                    }
+//                }
+//            }
+
+//            // Tạo view model
+//            var viewModel = new CoursePageViewModel
+//            {
+//                Course = course,
+//                RelatedCourses = relatedCourses,
+//                Includes = includes,
+//                InCourse = inCourse
+//            };
+
+//            return View(viewModel);
+//        }
+
+//    }
+//}

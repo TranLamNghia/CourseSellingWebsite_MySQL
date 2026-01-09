@@ -1,0 +1,140 @@
+﻿@model WebApplication1.Models.HocSinh
+
+@{
+    ViewData["Title"] = "Xác nhận Xóa Học Viên";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<style>
+    .delete-header {
+        margin-top: 20px;
+        margin-bottom: 30px;
+        border-left: 5px solid #dc3545;
+        padding-left: 15px;
+    }
+
+    .delete-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: #dc3545;
+    }
+
+    .delete-subtitle {
+        color: #6c757d;
+        font-size: 1.1rem;
+    }
+
+    .delete-card {
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        border: 1px solid #f8d7da;
+        max-width: 700px;
+        margin: 0 auto;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: 1fr 2fr;
+        gap: 15px;
+        margin-bottom: 25px;
+    }
+
+    .info-label {
+        font-weight: 600;
+        color: #495057;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+    }
+
+    .info-value {
+        color: #212529;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 5px;
+    }
+
+    .delete-avatar {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #f8d7da;
+        margin-bottom: 20px;
+    }
+
+    .btn-delete-confirm {
+        background-color: #dc3545;
+        color: white !important;
+        font-weight: 600;
+        padding: 12px 30px;
+        border-radius: 8px;
+        border: none;
+        transition: 0.3s;
+        width: 100%;
+    }
+
+        .btn-delete-confirm:hover {
+            background-color: #bb2d3b;
+            box-shadow: 0 5px 15px rgba(220, 53, 69, 0.3);
+        }
+
+    .back-btn {
+        display: block;
+        text-align: center;
+        margin-top: 15px;
+        color: #6c757d;
+        text-decoration: none;
+    }
+
+        .back-btn:hover {
+            color: #212529;
+        }
+</style>
+
+<div class="container py-5">
+    <div class="delete-header  mt-5">
+        <h1 class="delete-title">Xác nhận Xóa</h1>
+        <p class="delete-subtitle">Bạn có chắc chắn muốn xóa học viên này? Hành động này không thể hoàn tác.</p>
+    </div>
+
+    <div class="delete-card text-center text-md-start">
+        <div class="text-center">
+            <img src="@(string.IsNullOrEmpty(Model.DuongDanAnhDaiDien) ? "/images/default-avatar.png" : Model.DuongDanAnhDaiDien)"
+                 class="delete-avatar" alt="Avatar" />
+        </div>
+
+        <div class="info-grid">
+            <div class="info-label">Mã học viên</div>
+            <div class="info-value">#@Model.MaHocSinh</div>
+
+            <div class="info-label">Họ và tên</div>
+            <div class="info-value fw-bold">@Model.HoTen</div>
+
+            <div class="info-label">Email</div>
+            <div class="info-value">@Model.Email</div>
+
+            <div class="info-label">Số điện thoại</div>
+            <div class="info-value">@Model.DienThoai</div>
+
+            <div class="info-label">Ngày sinh</div>
+            <div class="info-value">@Model.NgaySinh?.ToString("dd/MM/yyyy")</div>
+
+            <div class="info-label">Giới tính</div>
+            <div class="info-value">@Model.GioiTinh</div>
+
+            <div class="info-label">Địa chỉ</div>
+            <div class="info-value">@Model.DiaChi</div>
+        </div>
+
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="MaHocSinh" />
+            <button type="submit" class="btn-delete-confirm">
+                <i class="fas fa-trash-alt me-2"></i> XÁC NHẬN XÓA VĨNH VIỄN
+            </button>
+            <a asp-action="Index" class="back-btn">
+                <i class="fas fa-arrow-left me-1"></i> Hủy bỏ và quay lại
+            </a>
+        </form>
+    </div>
+</div>
