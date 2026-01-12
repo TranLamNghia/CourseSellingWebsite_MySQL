@@ -53,6 +53,20 @@ namespace WebApplication1.Controllers
         }
 
         [HttpGet]
+        [Route("/about")]
+        public IActionResult About()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        [Route("/contact")]
+        public IActionResult Contact()
+        {
+            return View();
+        }
+
+        [HttpGet]
         [Route("/signup")]
         public IActionResult SignUp()
         {

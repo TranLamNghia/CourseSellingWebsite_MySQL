@@ -1,0 +1,1014 @@
+﻿@{
+    ViewData["Title"] = "About Us";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700,0..1&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+
+<style>
+    /* --- BIẾN CSS CỤC BỘ --- */
+    .about-wrapper {
+        --about-primary: #2563eb;
+        --about-text-dark: #0f172a;
+        --about-text-gray: #475569;
+        --about-bg-light: #f8fafc;
+        --about-border: #e2e8f0;
+        font-family: 'Inter', sans-serif;
+        color: var(--about-text-dark);
+        background-color: var(--about-bg-light);
+        width: 100%;
+        line-height: 1.5;
+        font-size: 16px; /* Đặt lại font size chuẩn để tránh thừa kế sai */
+    }
+
+        /* --- RESET CSS (Chỉ áp dụng bên trong about-wrapper) --- */
+        .about-wrapper *,
+        .about-wrapper *::before,
+        .about-wrapper *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        .about-wrapper img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .about-wrapper button {
+            cursor: pointer;
+            border: none;
+            font-family: inherit;
+        }
+
+        .about-wrapper a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        /* --- TIỆN ÍCH (Đã scope kỹ) --- */
+        .about-wrapper .about-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+    @@media (min-width: 640px) {
+        .about-wrapper .about-container {
+            padding: 0 1.5rem;
+        }
+    }
+
+    @@media (min-width: 1024px) {
+        .about-wrapper .about-container {
+            padding: 0 2rem;
+        }
+    }
+
+    .about-wrapper .about-section {
+        padding: 6rem 0;
+    }
+
+    .about-wrapper .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .about-wrapper .section-title {
+        font-size: 1.875rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        line-height: 1.2;
+    }
+
+    @@media (min-width: 768px) {
+        .about-wrapper .section-title {
+            font-size: 2.25rem;
+        }
+    }
+
+    .about-wrapper .section-desc {
+        color: var(--about-text-gray);
+        max-width: 42rem;
+        margin: 0 auto;
+    }
+
+    .about-wrapper .about-divider {
+        height: 6px;
+        width: 80px;
+        background-color: var(--about-primary);
+        margin: 1rem auto 0;
+        border-radius: 9999px;
+    }
+
+    /* Icon Google - Chỉ chỉnh style khi nằm trong wrapper */
+    .about-wrapper .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        display: inline-block;
+        vertical-align: middle;
+        line-height: 1;
+    }
+
+    /* --- HERO SECTION --- */
+    .about-wrapper .about-hero {
+        background-color: var(--about-primary);
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .about-wrapper .hero-pattern {
+        position: absolute;
+        inset: 0;
+        background-image: radial-gradient(rgba(255, 255, 255, 0.1) 2px, transparent 2px);
+        background-size: 40px 40px;
+        opacity: 0.3;
+        pointer-events: none;
+    }
+
+    .about-wrapper .hero-content {
+        position: relative;
+        z-index: 10;
+        display: flex;
+        flex-direction: column;
+        gap: 3rem;
+        align-items: center;
+    }
+
+    @@media (min-width: 1024px) {
+        .about-wrapper .hero-content {
+            flex-direction: row;
+        }
+
+        .about-wrapper .hero-text {
+            width: 50%;
+            text-align: left;
+        }
+
+        .about-wrapper .hero-image {
+            width: 50%;
+        }
+    }
+
+    .about-wrapper .hero-badge {
+        display: inline-block;
+        padding: 0.375rem 1rem;
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 9999px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        margin-bottom: 1.5rem;
+        backdrop-filter: blur(4px);
+    }
+
+    .about-wrapper .hero-title {
+        font-size: 2.25rem;
+        font-weight: 800;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+    }
+
+    @@media (min-width: 768px) {
+        .about-wrapper .hero-title {
+            font-size: 3.75rem;
+        }
+    }
+
+    .about-wrapper .highlight-text {
+        color: #bfdbfe;
+    }
+
+    .about-wrapper .hero-desc {
+        font-size: 1.125rem;
+        color: #dbeafe;
+        margin-bottom: 2rem;
+        line-height: 1.6;
+    }
+
+    /* Đổi tên class btn-white thành about-btn-white để tránh trùng */
+    .about-wrapper .about-btn-white {
+        background-color: white;
+        color: var(--about-primary);
+        padding: 0.875rem 2rem;
+        border-radius: 0.75rem;
+        font-weight: 700;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+        .about-wrapper .about-btn-white:hover {
+            background-color: #eff6ff;
+        }
+
+    .about-wrapper .hero-img-wrapper {
+        position: relative;
+    }
+
+        .about-wrapper .hero-img-wrapper img {
+            border-radius: 1rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+        }
+
+    .about-wrapper .hero-glow {
+        position: absolute;
+        inset: -1rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 1.5rem;
+        filter: blur(24px);
+        z-index: -1;
+    }
+
+    /* --- CORE VALUES --- */
+    .about-wrapper .bg-white {
+        background-color: white;
+    }
+
+    .about-wrapper .grid-values {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    @@media (min-width: 768px) {
+        .about-wrapper .grid-values {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    @@media (min-width: 1024px) {
+        .about-wrapper .grid-values {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    .about-wrapper .value-card {
+        background-color: #f8fafc;
+        padding: 2rem;
+        border-radius: 1.5rem;
+        border: 1px solid var(--about-border);
+        transition: all 0.3s ease;
+    }
+
+        .about-wrapper .value-card:hover {
+            border-color: var(--about-primary);
+        }
+
+        .about-wrapper .value-card .material-symbols-outlined {
+            font-size: 2.25rem;
+            color: var(--about-primary);
+            margin-bottom: 1.5rem;
+            transition: transform 0.3s;
+        }
+
+        .about-wrapper .value-card:hover .material-symbols-outlined {
+            transform: scale(1.1);
+        }
+
+        .about-wrapper .value-card h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .about-wrapper .value-card p {
+            font-size: 0.875rem;
+            color: var(--about-text-gray);
+        }
+
+    /* --- TIMELINE --- */
+    .about-wrapper .timeline-wrapper {
+        position: relative;
+    }
+
+    .about-wrapper .timeline-line {
+        display: none;
+        position: absolute;
+        top: 50%;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background-color: #bfdbfe;
+        transform: translateY(-50%);
+    }
+
+    @@media (min-width: 768px) {
+        .about-wrapper .timeline-line {
+            display: block;
+        }
+    }
+
+    .about-wrapper .timeline-grid {
+        position: relative;
+        z-index: 10;
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    @@media (min-width: 768px) {
+        .about-wrapper .timeline-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    .about-wrapper .timeline-card {
+        background-color: white;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        border: 1px solid var(--about-border);
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+        position: relative;
+    }
+
+    .about-wrapper .year-badge {
+        width: 3rem;
+        height: 3rem;
+        background-color: var(--about-primary);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    @@media (min-width: 768px) {
+        .about-wrapper .year-badge {
+            position: absolute;
+            bottom: -5rem;
+            left: 50%;
+            transform: translateX(-50%);
+            margin-bottom: 0;
+        }
+
+        .about-wrapper .spacer-desktop {
+            height: 6rem;
+            display: block;
+        }
+    }
+
+    @@media (max-width: 767px) {
+        .about-wrapper .spacer-desktop {
+            display: none;
+        }
+    }
+
+    /* --- STATS SECTION --- */
+    .about-wrapper .stats-section {
+        background-color: var(--about-primary);
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .about-wrapper .stats-blob {
+        position: absolute;
+        width: 24rem;
+        height: 24rem;
+        background-color: rgba(255,255,255,0.05);
+        border-radius: 50%;
+        filter: blur(64px);
+    }
+
+    .about-wrapper .blob-1 {
+        top: 0;
+        right: -12rem;
+        margin-top: -12rem;
+    }
+
+    .about-wrapper .blob-2 {
+        bottom: 0;
+        left: -12rem;
+        margin-bottom: -12rem;
+    }
+
+    .about-wrapper .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 3rem;
+        text-align: center;
+    }
+
+    @@media (min-width: 1024px) {
+        .about-wrapper .stats-grid {
+            grid-template-columns: repeat(4, 1fr);
+        }
+    }
+
+    .about-wrapper .stat-number {
+        font-size: 3.75rem;
+        font-weight: 900;
+        margin-bottom: 0.5rem;
+        line-height: 1;
+    }
+
+    .about-wrapper .stat-label {
+        color: #bfdbfe;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.875rem;
+        letter-spacing: 0.1em;
+        margin-bottom: 0.5rem;
+    }
+
+    /* --- TEAM SECTION --- */
+    .about-wrapper .team-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 3rem;
+    }
+
+    @@media (min-width: 768px) {
+        .about-wrapper .team-grid {
+            grid-template-columns: repeat(3, 1fr);
+        }
+    }
+
+    .about-wrapper .team-card:hover .team-img {
+        transform: scale(1.1);
+    }
+
+    .about-wrapper .team-img-wrapper {
+        position: relative;
+        overflow: hidden;
+        border-radius: 1rem;
+        background-color: #f1f5f9;
+        aspect-ratio: 4/5;
+        margin-bottom: 1.5rem;
+    }
+
+    .about-wrapper .team-img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.5s ease;
+    }
+
+    .about-wrapper .team-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .about-wrapper .team-role {
+        color: var(--about-primary);
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+    }
+
+    .about-wrapper .team-bio {
+        font-size: 0.875rem;
+        color: var(--about-text-gray);
+        display: -webkit-box;
+        -webkit-line-clamp: 3;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    /* --- PARTNERS --- */
+    .about-wrapper .bg-gray-light {
+        background-color: #f8fafc;
+        border-top: 1px solid var(--about-border);
+        border-bottom: 1px solid var(--about-border);
+    }
+
+    .about-wrapper .partners-flex {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        gap: 2rem;
+        opacity: 0.6;
+        filter: grayscale(100%);
+        transition: all 0.3s;
+    }
+
+        .about-wrapper .partners-flex:hover {
+            opacity: 1;
+            filter: grayscale(0);
+        }
+
+    @@media (min-width: 768px) {
+        .about-wrapper .partners-flex {
+            gap: 4rem;
+        }
+    }
+
+    .about-wrapper .partner-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .about-wrapper .partner-text {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #94a3b8;
+        text-transform: uppercase;
+    }
+
+    .about-wrapper .partner-icon {
+        font-size: 2.25rem;
+        color: #94a3b8;
+    }
+
+    /* --- CSR & CAREERS --- */
+    .about-wrapper .two-col-flex {
+        display: flex;
+        flex-direction: column;
+        gap: 4rem;
+        align-items: center;
+    }
+
+    @@media (min-width: 1024px) {
+        .about-wrapper .two-col-flex {
+            flex-direction: row;
+        }
+
+        .about-wrapper .col-half {
+            width: 50%;
+        }
+    }
+
+    .about-wrapper .csr-img-wrapper {
+        position: relative;
+    }
+
+    .about-wrapper .csr-img {
+        border-radius: 1.5rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        width: 100%;
+        height: 400px;
+        object-fit: cover;
+    }
+
+    .about-wrapper .csr-stat-box {
+        position: absolute;
+        bottom: -1.5rem;
+        right: -1.5rem;
+        background-color: var(--about-primary);
+        padding: 2rem;
+        border-radius: 1rem;
+        color: white;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+        display: none;
+    }
+
+    @@media (min-width: 768px) {
+        .about-wrapper .csr-stat-box {
+            display: block;
+        }
+    }
+
+    .about-wrapper .csr-list {
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+        margin-top: 1.5rem;
+    }
+
+    .about-wrapper .csr-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .about-wrapper .icon-box {
+        background-color: #dbeafe;
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        display: flex;
+        margin-top: 0.25rem;
+    }
+
+        .about-wrapper .icon-box .material-symbols-outlined {
+            color: var(--about-primary);
+        }
+
+    /* CAREERS */
+    .about-wrapper .bg-primary-fade {
+        background-color: rgba(37, 99, 235, 0.05);
+    }
+
+    .about-wrapper .benefits-grid {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    @@media (min-width: 640px) {
+        .about-wrapper .benefits-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+    }
+
+    .about-wrapper .benefit-card {
+        background-color: white;
+        padding: 1.5rem;
+        border-radius: 1rem;
+        border: 1px solid var(--about-border);
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    }
+
+    .about-wrapper .jobs-wrapper {
+        background-color: white;
+        padding: 2rem;
+        border-radius: 1.5rem;
+        border: 1px solid var(--about-border);
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .about-wrapper .job-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem;
+        border-radius: 0.75rem;
+        border: 1px solid var(--about-border);
+        margin-bottom: 1rem;
+        transition: all 0.2s;
+        cursor: pointer;
+    }
+
+        .about-wrapper .job-item:hover {
+            border-color: var(--about-primary);
+        }
+
+            .about-wrapper .job-item:hover .job-title {
+                color: var(--about-primary);
+            }
+
+            .about-wrapper .job-item:hover .arrow-icon {
+                transform: translateX(4px);
+            }
+
+    .about-wrapper .job-title {
+        font-weight: 700;
+        transition: color 0.2s;
+    }
+
+    .about-wrapper .job-meta {
+        font-size: 0.75rem;
+        color: #64748b;
+        margin-top: 0.25rem;
+    }
+
+    .about-wrapper .arrow-icon {
+        color: #94a3b8;
+        transition: transform 0.2s;
+    }
+
+    /* Đổi tên class btn-primary thành about-btn-primary để tránh xung đột với header */
+    .about-wrapper .about-btn-primary {
+        width: 100%;
+        margin-top: 1rem;
+        padding: 1rem;
+        background-color: var(--about-primary);
+        color: white;
+        font-weight: 700;
+        border-radius: 0.75rem;
+        transition: background-color 0.2s;
+    }
+
+        .about-wrapper .about-btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+    /* FAQ */
+    .about-wrapper .faq-container {
+        max-width: 56rem;
+        margin: 0 auto;
+    }
+
+    .about-wrapper .faq-item {
+        border: 1px solid var(--about-border);
+        border-radius: 1rem;
+        overflow: hidden;
+        margin-bottom: 1rem;
+        box-shadow: 0 1px 2px 0 rgba(0,0,0,0.05);
+    }
+
+    .about-wrapper .faq-btn {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1.5rem;
+        background-color: transparent;
+        text-align: left;
+        transition: background-color 0.2s;
+    }
+
+        .about-wrapper .faq-btn:hover {
+            background-color: #f8fafc;
+        }
+
+    .about-wrapper .faq-question {
+        font-weight: 700;
+    }
+
+</style>
+
+<div class="about-wrapper">
+
+    <section class="about-section about-hero">
+        <div class="hero-pattern"></div>
+        <div class="about-container hero-content">
+            <div class="hero-text">
+                <span class="hero-badge">Câu chuyện của chúng tôi</span>
+                <h1 class="hero-title">
+                    Hơn cả một nền tảng,<br /><span class="highlight-text">Chúng tôi là tương lai</span>
+                </h1>
+                <p class="hero-desc">
+                    Được thành lập với khát khao nâng tầm giáo dục Việt Nam, EduLearn kết hợp giữa tinh hoa giảng dạy truyền thống và công nghệ tiên tiến để đồng hành cùng học sinh THPT trên con đường chinh phục ước mơ.
+                </p>
+                <div>
+                    <button class="about-btn-white">Gia nhập cộng đồng</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <div class="hero-img-wrapper">
+                    <div class="hero-glow"></div>
+                    <img alt="Team working" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBNiH33m4Tl7ho6FXzMwaYe4a9zbDoyl5LxGNChNrBHQlA-fJMWSu-nouJ1lS5mZYle7Z_FFam1MxtIN1njHUz0LCPSX8YJpSS-qT3ga0IUX0Ldf0bTHiF6IbSp4vn3y32jS_sFywBpjV45MbTBVZ_nzGXdTmpCdzYjWOBWrIhCVJAuJI8pSHay3WFKQX_NpHaTTR23Po0yJEz_NgpPVOErvYn_DYThADluQe9ocCV-PNNEwRCAoMig5itWrkF1PX_VbYloV9gfSAH3" />
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section bg-white">
+        <div class="about-container">
+            <div class="section-header">
+                <h2 class="section-title">Giá Trị Cốt Lõi</h2>
+                <p class="section-desc">Kim chỉ nam cho mọi hoạt động và quyết định tại EduLearn.</p>
+                <div class="about-divider"></div>
+            </div>
+            <div class="grid-values">
+                <div class="value-card">
+                    <span class="material-symbols-outlined">lightbulb</span>
+                    <h3>Đổi Mới (Innovation)</h3>
+                    <p>Luôn cập nhật và ứng dụng những công nghệ giáo dục mới nhất để mang lại trải nghiệm học tập đột phá.</p>
+                </div>
+                <div class="value-card">
+                    <span class="material-symbols-outlined">verified</span>
+                    <h3>Chất Lượng (Quality)</h3>
+                    <p>Cam kết nội dung bài giảng chuyên sâu, bám sát thực tế và được kiểm duyệt bởi đội ngũ chuyên gia hàng đầu.</p>
+                </div>
+                <div class="value-card">
+                    <span class="material-symbols-outlined">shield_person</span>
+                    <h3>Chính Trực (Integrity)</h3>
+                    <p>Xây dựng niềm tin thông qua sự minh bạch, trung thực trong mọi cam kết về kết quả học tập của học sinh.</p>
+                </div>
+                <div class="value-card">
+                    <span class="material-symbols-outlined">diversity_3</span>
+                    <h3>Cộng Đồng (Community)</h3>
+                    <p>Kiến tạo môi trường học tập tương tác, nơi học sinh và giáo viên cùng nhau chia sẻ và phát triển.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section bg-gray-light" style="overflow: hidden;">
+        <div class="about-container">
+            <div class="section-header">
+                <h2 class="section-title">Hành Trình Phát Triển</h2>
+                <div class="about-divider"></div>
+            </div>
+            <div class="timeline-wrapper">
+                <div class="timeline-line"></div>
+                <div class="timeline-grid">
+                    <div class="timeline-card">
+                        <div class="year-badge">2020</div>
+                        <h4 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Khởi Đầu</h4>
+                        <p style="font-size: 0.875rem; color: var(--about-text-gray);">EduLearn ra đời với đội ngũ 10 giáo viên tâm huyết và 500 học sinh đầu tiên.</p>
+                    </div>
+                    <div class="timeline-card">
+                        <div class="year-badge">2021</div>
+                        <h4 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Đột Phá Công Nghệ</h4>
+                        <p style="font-size: 0.875rem; color: var(--about-text-gray);">Ra mắt hệ thống học tập AI giúp cá nhân hóa lộ trình cho từng học sinh.</p>
+                    </div>
+                    <div class="timeline-card">
+                        <div class="year-badge">2022</div>
+                        <h4 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Mở Rộng Quy Mô</h4>
+                        <p style="font-size: 0.875rem; color: var(--about-text-gray);">Đạt cột mốc 50,000 học sinh trên khắp 63 tỉnh thành Việt Nam.</p>
+                    </div>
+                    <div class="timeline-card">
+                        <div class="year-badge">2024</div>
+                        <h4 style="font-size: 1.125rem; font-weight: 700; margin-bottom: 0.5rem;">Dẫn Đầu Thị Trường</h4>
+                        <p style="font-size: 0.875rem; color: var(--about-text-gray);">Trở thành nền tảng luyện thi THPT hàng đầu với 100,000+ người dùng.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="spacer-desktop"></div>
+        </div>
+    </section>
+
+    <section class="about-section stats-section">
+        <div class="stats-blob blob-1"></div>
+        <div class="stats-blob blob-2"></div>
+        <div class="about-container" style="position: relative; z-index: 10;">
+            <div class="section-header">
+                <h2 style="font-size: 2.25rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 1.5rem; color: white;">Tác Động Của Chúng Tôi</h2>
+                <p style="color: #dbeafe; font-size: 1.125rem; max-width: 48rem; margin: 0 auto;">Chúng tôi đo lường thành công bằng sự tiến bộ và những cánh cửa đại học mà học sinh đã mở ra.</p>
+            </div>
+            <div class="stats-grid">
+                <div>
+                    <div class="stat-number">100k+</div>
+                    <div class="stat-label">Học Sinh Đăng Ký</div>
+                </div>
+                <div>
+                    <div class="stat-number">500+</div>
+                    <div class="stat-label">Chuyên Gia Giảng Dạy</div>
+                </div>
+                <div>
+                    <div class="stat-number">95%</div>
+                    <div class="stat-label">Tỉ Lệ Tiến Bộ</div>
+                </div>
+                <div>
+                    <div class="stat-number">10k+</div>
+                    <div class="stat-label">Bài Giảng HD</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section bg-white">
+        <div class="about-container">
+            <div class="section-header">
+                <h2 class="section-title">Đội Ngũ Lãnh Đạo</h2>
+                <p class="section-desc">Những người dẫn dắt sứ mệnh giáo dục tại EduLearn.</p>
+                <div class="about-divider"></div>
+            </div>
+            <div class="team-grid">
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <img alt="CEO" class="team-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyUC8XohSC6Ef7fzhsYxAocIBxC1lrGH2_vxAk4Gd8nhdq4wEneWnZM5NlRgz0mo2LFxxvacak9-iZQAQvnbHAE6oGlR-PyGzRDKVGYeJdLGkSZ7UHLb0oX4RPr7Mc0x391Y3XL_r3Rv8HwwJn6AA9g2leOnkkojI57OVWij9Em_Ekp62dGQl723uuxYeYlHWH0ndHUfv-5uR3nrs1XB7QO9bjizMTqDiadyN0fOC6Urie7kDiRIMSXs6DjyZ3aO_mON4OCxDjCx22" />
+                    </div>
+                    <h4 class="team-name">TS. Nguyễn Văn A</h4>
+                    <p class="team-role">Sáng lập & CEO</p>
+                    <p class="team-bio">Hơn 15 năm kinh nghiệm trong quản lý giáo dục và phát triển công nghệ học tập trực tuyến.</p>
+                </div>
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <img alt="CPO" class="team-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJ4Ydjy4xxRLzSlkT8G0s9YozrBFJVnkSBRBpMnWacUp1O-Fj7YNR6vwgJ114vaRgXwq_M0P-xG-LlTV_kb10eXL7o5JK7t4JKG8z2P8nwA1SQgEy-Xg5acRC_sC6ihqHD6Sh24tmzk77Zb-ibcbMFrWAxFcxqrKrk53YOrzvlGhr6LsFT9cd1ADZOgefyp_zuZjREl-QHi8RoVaE3gZ1iLmEoR8FYSk_r2wegnLCdVN6fCdQLY7LCbGMQWquDtwUZNz8av0rvAeMW" />
+                    </div>
+                    <h4 class="team-name">ThS. Lê Thị B</h4>
+                    <p class="team-role">Giám đốc Nội dung</p>
+                    <p class="team-bio">Chuyên gia xây dựng chương trình đào tạo, nguyên là giáo viên trường THPT chuyên hàng đầu.</p>
+                </div>
+                <div class="team-card">
+                    <div class="team-img-wrapper">
+                        <img alt="CTO" class="team-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAJt6UePJTwfWQLYjqcoUxazBHn1b1dwGj2uC-DnEafVzZsjzU0-8FkeH8TufMgC_2UsMf6gzvKO5A7KcP93Fl8Gs0mfGpVybXTdkcYO1MGNar-NNbcByFmkt_dRHOeWMADNQKE2-Uo9h0TMYs6Fj4T4kcLjZGGuX0LOB-tKhZdKJvvMJMBOQDBjY3O8GivUb2bOlcLTsYTZQ8ukGf2GsRL2tCuozjt1ijTkRF5ooexZvc6nXdJuHT2dLHKhkNqIhPKXEs9AuWAoR9c" />
+                    </div>
+                    <h4 class="team-name">Ông Trần Văn C</h4>
+                    <p class="team-role">Giám đốc Công nghệ</p>
+                    <p class="team-bio">Kỹ sư AI với kinh nghiệm làm việc tại các tập đoàn công nghệ lớn, tiên phong trong cá nhân hóa giáo dục.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section bg-gray-light">
+        <div class="about-container">
+            <div class="section-header">
+                <h2 class="section-title" style="margin-bottom: 1rem;">Đối Tác & Kiểm Định</h2>
+                <p class="section-desc">Chúng tôi tự hào đồng hành cùng các đơn vị giáo dục uy tín toàn cầu.</p>
+            </div>
+            <div class="partners-flex">
+                <div class="partner-item">
+                    <span class="material-symbols-outlined text-4xl">account_balance</span>
+                    <span class="text-xl font-extrabold tracking-tighter">UNI-VIETNAM</span>
+                </div>
+                <div class="partner-item">
+                    <span class="material-symbols-outlined text-4xl">verified_user</span>
+                    <span class="text-xl font-extrabold tracking-tighter">EDU-GLOBAL</span>
+                </div>
+                <div class="partner-item">
+                    <span class="material-symbols-outlined text-4xl">workspace_premium</span>
+                    <span class="text-xl font-extrabold tracking-tighter">QUALITY-CERT</span>
+                </div>
+                <div class="partner-item">
+                    <span class="material-symbols-outlined text-4xl">school</span>
+                    <span class="text-xl font-extrabold tracking-tighter">ACADEMIA-NET</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section bg-white">
+        <div class="about-container">
+            <div class="two-col-flex">
+                <div class="col-half">
+                    <div class="csr-img-wrapper">
+                        <img alt="Community Support" class="csr-img" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGbdIiWPA9tQcTA1hIeQYb0X3abzADeyw_IxOCAzQyjUOjkJg2xrhZvXORlf6L4GpazLUBOvDtmRuMgab7JqqlwuVlPHxLLGohccgj_qxC6efyTJFkSMJipoK_daG8k09cAslL8SII2_jGGCO7wvV7RD3eZ1nr7lfK_mD29HgEUL94n9iKrzpK4AEoU1NORGXpHmUghhBKOSkuNRJMsSPgOtiX4Dw9R6R0_HmYedU7ZJbrF5QPYyTKUJP77y-_EVZXBepccL4MxjhG" />
+                        <div class="csr-stat-box">
+                            <div style="font-size: 2.25rem; font-weight: 700; line-height: 1;">5000+</div>
+                            <div style="font-size: 0.875rem; opacity: 0.9;">Học bổng đã trao tặng</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-half">
+                    <h2 class="section-title">Trách Nhiệm Xã Hội</h2>
+                    <p class="section-desc" style="margin-left: 0; text-align: left;">
+                        Tại EduLearn, chúng tôi tin rằng giáo dục là chìa khóa để thay đổi tương lai. Sứ mệnh của chúng tôi không chỉ dừng lại ở kinh doanh mà còn là việc thu hẹp khoảng cách giáo dục giữa các vùng miền.
+                    </p>
+                    <div class="csr-list">
+                        <div class="csr-item">
+                            <div class="icon-box"><span class="material-symbols-outlined">volunteer_activism</span></div>
+                            <div>
+                                <h4 style="font-weight: 700; font-size: 1.125rem;">Quỹ Học Bổng Thắp Sáng Ước Mơ</h4>
+                                <p style="font-size: 0.875rem; color: var(--about-text-gray);">Hỗ trợ 100% học phí cho học sinh nghèo vượt khó tại các tỉnh vùng sâu, vùng xa.</p>
+                            </div>
+                        </div>
+                        <div class="csr-item">
+                            <div class="icon-box"><span class="material-symbols-outlined">auto_stories</span></div>
+                            <div>
+                                <h4 style="font-weight: 700; font-size: 1.125rem;">Dự Án Thư Viện Số Cộng Đồng</h4>
+                                <p style="font-size: 0.875rem; color: var(--about-text-gray);">Cung cấp quyền truy cập miễn phí vào kho bài giảng chất lượng cho các trường học khó khăn.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section bg-primary-fade">
+        <div class="about-container">
+            <div class="two-col-flex">
+                <div class="col-half">
+                    <h2 class="section-title">Gia Nhập Đội Ngũ EduLearn</h2>
+                    <p class="section-desc" style="margin-left: 0; text-align: left;">Chúng tôi luôn tìm kiếm những tâm hồn nhiệt huyết, yêu giáo dục và khao khát ứng dụng công nghệ để tạo nên sự khác biệt.</p>
+                    <div class="benefits-grid">
+                        <div class="benefit-card">
+                            <span class="material-symbols-outlined" style="color: var(--about-primary); margin-bottom: 0.5rem;">rocket_launch</span>
+                            <h4 style="font-weight: 700;">Môi Trường Năng Động</h4>
+                            <p style="font-size: 0.875rem; color: #64748b; margin-top: 0.5rem;">Sáng tạo, không giới hạn ý tưởng và luôn khuyến khích phát triển bản thân.</p>
+                        </div>
+                        <div class="benefit-card">
+                            <span class="material-symbols-outlined" style="color: var(--about-primary); margin-bottom: 0.5rem;">favorite</span>
+                            <h4 style="font-weight: 700;">Đãi Ngộ Hấp Dẫn</h4>
+                            <p style="font-size: 0.875rem; color: #64748b; margin-top: 0.5rem;">Lương thưởng xứng đáng, bảo hiểm cao cấp và các khóa đào tạo chuyên sâu.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-half" style="width: 100%;">
+                    <div class="jobs-wrapper">
+                        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 1.5rem;">Vị Trí Đang Tuyển Dụng</h3>
+                        <div>
+                            <div class="job-item">
+                                <div>
+                                    <div class="job-title">Giáo viên Toán (THPT)</div>
+                                    <div class="job-meta">Toàn thời gian • Hybrid</div>
+                                </div>
+                                <span class="material-symbols-outlined arrow-icon">arrow_forward</span>
+                            </div>
+                            <div class="job-item">
+                                <div>
+                                    <div class="job-title">Chuyên viên Nội dung Số</div>
+                                    <div class="job-meta">Toàn thời gian • Tại văn phòng</div>
+                                </div>
+                                <span class="material-symbols-outlined arrow-icon">arrow_forward</span>
+                            </div>
+                            <div class="job-item">
+                                <div>
+                                    <div class="job-title">Kỹ sư Frontend (React/CSS)</div>
+                                    <div class="job-meta">Toàn thời gian • Remote</div>
+                                </div>
+                                <span class="material-symbols-outlined arrow-icon">arrow_forward</span>
+                            </div>
+                        </div>
+                        <button class="about-btn-primary">Xem tất cả vị trí</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="about-section bg-white">
+        <div class="about-container faq-container">
+            <div class="section-header">
+                <h2 class="section-title">Câu Hỏi Thường Gặp</h2>
+                <p class="section-desc">Giải đáp những thắc mắc phổ biến về học viện và chương trình học.</p>
+                <div class="about-divider"></div>
+            </div>
+            <div class="faq-list">
+                <div class="faq-item">
+                    <button class="faq-btn">
+                        <span class="faq-question">Lộ trình học tập tại EduLearn được xây dựng như thế nào?</span>
+                        <span class="material-symbols-outlined" style="color: var(--about-primary);">add</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
