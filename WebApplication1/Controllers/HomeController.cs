@@ -155,10 +155,10 @@ namespace WebApplication1.Controllers
 
                 return RedirectToAction("HomePage", "Home");
             }
-            else if (model.UserType == "admin")
-            {
-                // ... (giữ nguyên phần cho Admin)
-            }
+            //else if (model.UserType == "admin")
+            //{
+            //    // ... (giữ nguyên phần cho Admin)
+            //}
 
             ModelState.AddModelError("", "Loại người dùng không hợp lệ.");
             return View(model);

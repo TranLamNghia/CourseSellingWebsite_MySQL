@@ -24,6 +24,14 @@
         color: white !important;
     }
 
+    .password-strength {
+        display: none;
+        margin-top: 5px;
+    }
+
+        .password-strength.active {
+            display: block;
+        }
 
 </style>
 
@@ -244,46 +252,58 @@
     setupPasswordToggle('toggleConfirmPassword', 'confirmPassword');
 
     // Password strength checker
-    document.getElementById('password-signup').addEventListener('input', function() {
-      const password = this.value;
-      const strengthBar = document.querySelector('.strength-fill');
-      const strengthText = document.querySelector('.strength-text');
+        document.getElementById('password-signup').addEventListener('input', function() {
+        const password = this.value;
+        const strengthContainer = document.querySelector('.password-strength'); // Thêm dòng này
+        const strengthBar = document.querySelector('.strength-fill');
+        const strengthText = document.querySelector('.strength-text');
 
-      let strength = 0;
-      let strengthLabel = 'Mật khẩu yếu';
-      let strengthColor = '#ff4757';
+        // Nếu mật khẩu trống, ẩn container và thoát
+        if (password.length === 0) {
+            strengthContainer.classList.remove('active');
+            return;
+        } else {
+            strengthContainer.classList.add('active');
+        }
 
-      if (password.length >= 8) strength++;
-      if (/[a-z]/.test(password)) strength++;
-      if (/[A-Z]/.test(password)) strength++;
-      if (/[0-9]/.test(password)) strength++;
-      if (/[^A-Za-z0-9]/.test(password)) strength++;
+        let strength = 0;
+        let strengthLabel = 'Mật khẩu yếu';
+        let strengthColor = '#ff4757';
 
-      switch (strength) {
-        case 0:
-        case 1:
-          strengthLabel = 'Mật khẩu yếu';
-          strengthColor = '#ff4757';
-          break;
-        case 2:
-        case 3:
-          strengthLabel = 'Mật khẩu trung bình';
-          strengthColor = '#ffa502';
-          break;
-        case 4:
-          strengthLabel = 'Mật khẩu mạnh';
-          strengthColor = '#2ed573';
-          break;
-        case 5:
-          strengthLabel = 'Mật khẩu rất mạnh';
-          strengthColor = '#1dd1a1';
-          break;
-      }
+        // Tính toán độ mạnh
+        if (password.length >= 8) strength++;
+        if (/[a-z]/.test(password)) strength++;
+        if (/[A-Z]/.test(password)) strength++;
+        if (/[0-9]/.test(password)) strength++;
+        if (/[^A-Za-z0-9]/.test(password)) strength++;
 
-      strengthBar.style.width = `${(strength / 5) * 100}%`;
-      strengthBar.style.backgroundColor = strengthColor;
-      strengthText.textContent = strengthLabel;
-      strengthText.style.color = strengthColor;
+        switch (strength) {
+            case 1:
+                strengthLabel = 'Mật khẩu rất yếu';
+                strengthColor = '#ff4757';
+                break;
+            case 2:
+                strengthLabel = 'Mật khẩu yếu';
+                strengthColor = '#ffa502';
+                break;
+            case 3:
+                strengthLabel = 'Mật khẩu trung bình';
+                strengthColor = '#ffa502';
+                break;
+            case 4:
+                strengthLabel = 'Mật khẩu mạnh';
+                strengthColor = '#2ed573';
+                break;
+            case 5:
+                strengthLabel = 'Mật khẩu rất mạnh';
+                strengthColor = '#1dd1a1';
+                break;
+        }
+
+        strengthBar.style.width = `${(strength / 5) * 100}%`;
+        strengthBar.style.backgroundColor = strengthColor;
+        strengthText.textContent = strengthLabel;
+        strengthText.style.color = strengthColor;
     });
 
     // Password match checker
