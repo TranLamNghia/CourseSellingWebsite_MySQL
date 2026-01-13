@@ -90,12 +90,14 @@
 
 <div class="edit-container">
     <h2>Thêm khóa học mới</h2>
-
-    <form asp-action="Create" enctype="multipart/form-data">
+    <div asp-validation-summary="All" class="text-danger"></div>
+    <form asp-controller="KhoaHocs" asp-action="Create" method="post" enctype="multipart/form-data">
         <div class="form-group">
-            <label asp-for="MonHoc"></label>
-            <input asp-for="MonHoc" />
-            <span asp-validation-for="MonHoc"></span>
+            <label>Môn học</label>
+            <select asp-for="MaMonHoc" class="form-control" asp-items="ViewBag.MaMonHoc">
+                <option value="">-- Chọn môn học --</option>
+            </select>
+            <span asp-validation-for="MaMonHoc"></span>
         </div>
 
         <div class="form-group">
@@ -128,16 +130,14 @@
         </div>
 
         <div class="form-group">
-            <label asp-for="MaGiaoVien"></label>
-            <select asp-for="MaGiaoVien" asp-items="ViewBag.MaGiaoVien"></select>
+            <label asp-for="MaGiaoVien">Giáo viên giảng dạy</label>
+            <select asp-for="MaGiaoVien" class="form-control" asp-items="ViewBag.MaGiaoVien">
+                <option value="">-- Chọn giáo viên --</option>
+            </select>
             <span asp-validation-for="MaGiaoVien"></span>
         </div>
 
-        <div class="form-group">
-            <label asp-for="NgayCapNhat"></label>
-            <input asp-for="NgayCapNhat" type="date" />
-            <span asp-validation-for="NgayCapNhat"></span>
-        </div>
+       
 
         <div class="button-group">
             <a asp-action="Index" class="btn btn-secondary">Quay lại</a>

@@ -182,7 +182,7 @@
 
 <div class="container py-4">
     <div class="admin-header">
-        <h1 class="admin-title"><i class="fas fa-users-cog me-2"></i>Quản lý Học sinh</h1>
+        <h1 class="admin-title">Quản lý Học sinh</h1>
         <p class="text-muted">Hệ thống quản trị thông tin học viên và trạng thái tài khoản.</p>
     </div>
 
@@ -210,7 +210,7 @@
                         <tr style="@(item.IsActive ? "" : "opacity: 0.85;")">
                             <td class="text-muted fw-bold small">#@item.MaHocSinh</td>
                             <td>
-                                <img src="@(string.IsNullOrEmpty(item.DuongDanAnhDaiDien) ? "/images/default-avatar.png" : item.DuongDanAnhDaiDien)"
+                                <img src="@(string.IsNullOrEmpty(item.DuongDanAnhDaiDien) ? "/Image/default-avatar.png" : item.DuongDanAnhDaiDien)"
                                      class="avatar-thumb" alt="Avatar" />
                             </td>
                             <td>

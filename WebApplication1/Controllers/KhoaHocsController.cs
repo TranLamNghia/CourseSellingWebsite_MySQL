@@ -105,8 +105,10 @@ namespace WebApplication1.Controllers
 
         // GET: KhoaHocs/Create
         public IActionResult Create()
+
         {
-            ViewData["MaGiaoVien"] = new SelectList(_context.GiaoViens, "MaGiaoVien", "MaGiaoVien");
+            ViewData["MaMonHoc"] = new SelectList(_context.MonHocs, "MaMonHoc", "TenMonHoc");
+            ViewData["MaGiaoVien"] = new SelectList(_context.GiaoViens, "MaGiaoVien", "HoTen");
             return View();
         }
 
@@ -115,47 +117,59 @@ namespace WebApplication1.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MonHoc,TieuDe,DuongDanAnhKhoaHoc,MoTa,ThoiHan,MaGiaoVien,NgayCapNhat")] KhoaHoc khoaHoc, IFormFile AnhKhoaHoc)
+        public async Task<IActionResult> Create([Bind("MaMonHoc,TieuDe,DuongDanAnhKhoaHoc,MoTa,ThoiHan,MaGiaoVien, GiaKhoaHoc")] KhoaHoc khoaHoc, IFormFile AnhKhoaHoc)
         {
+            khoaHoc.NgayCapNhat = DateTime.Now;
+
             if (Request.Form.TryGetValue("GiaKhoaHoc", out StringValues giaValueString) &&
-                 decimal.TryParse(giaValueString, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal giaKhoaHocValue))
+                decimal.TryParse(giaValueString, NumberStyles.Any, CultureInfo.InvariantCulture, out decimal giaKhoaHocValue))
             {
                 khoaHoc.GiaKhoaHoc = giaKhoaHocValue;
             }
+
+            var mh = await _context.MonHocs.FindAsync(khoaHoc.MaMonHoc);
+            if (mh != null)
+            {
+                khoaHoc.MonHoc = mh.TenMonHoc;
+            }
+
             if (AnhKhoaHoc != null)
             {
                 var imageUrl = _cloudinaryService.UploadImage(AnhKhoaHoc);
                 khoaHoc.DuongDanAnhKhoaHoc = imageUrl;
             }
+
             khoaHoc.MaKhoaHoc = "BH" + DateTime.Now.ToString("yyMMddHHmmss") + new Random().Next(100, 999);
+
             ModelState.Remove(nameof(KhoaHoc.MaGiaoVienNavigation));
+            ModelState.Remove(nameof(KhoaHoc.MaMonHocNavigation));
+            ModelState.Remove(nameof(KhoaHoc.MonHoc));
+            ModelState.Remove(nameof(KhoaHoc.NgayCapNhat));
+            ModelState.Remove("MaKhoaHoc");
             if (ModelState.IsValid)
             {
                 _context.Add(khoaHoc);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-           
-            ViewData["MaGiaoVien"] = new SelectList(_context.GiaoViens, "MaGiaoVien", "MaGiaoVien", khoaHoc.MaGiaoVien);
+
+            ViewData["MaGiaoVien"] = new SelectList(_context.GiaoViens, "MaGiaoVien", "HoTen", khoaHoc.MaGiaoVien);
+            ViewData["MaMonHoc"] = new SelectList(_context.MonHocs, "MaMonHoc", "TenMonHoc", khoaHoc.MaMonHoc);
             return View(khoaHoc);
         }
 
         // GET: KhoaHocs/Edit/5
         public async Task<IActionResult> Edit(string id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
             var khoaHoc = await _context.KhoaHocs.FindAsync(id);
-            if (khoaHoc == null)
-            {
-                return NotFound();
-            }
+            if (khoaHoc == null) return NotFound();
 
-            // CẢI TIẾN: Hiển thị "HoTen" của giáo viên thay vì "MaGiaoVien"
+            // Thêm danh sách Môn học và Giáo viên (Hiển thị tên)
+            ViewData["MaMonHoc"] = new SelectList(_context.MonHocs, "MaMonHoc", "TenMonHoc", khoaHoc.MaMonHoc);
             ViewData["MaGiaoVien"] = new SelectList(_context.GiaoViens, "MaGiaoVien", "HoTen", khoaHoc.MaGiaoVien);
+
             return View(khoaHoc);
         }
 
@@ -163,64 +177,58 @@ namespace WebApplication1.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id,
-            [Bind("MaKhoaHoc,MonHoc,TieuDe,MoTa,GiaKhoaHoc,ThoiHan,MaGiaoVien")] KhoaHoc khoaHoc,
-            IFormFile? AnhKhoaHoc) // Thêm tham số IFormFile để nhận ảnh
+    [Bind("MaKhoaHoc,MaMonHoc,TieuDe,MoTa,GiaKhoaHoc,ThoiHan,MaGiaoVien")] KhoaHoc khoaHoc,
+    IFormFile? AnhKhoaHoc)
         {
-            if (id != khoaHoc.MaKhoaHoc)
-            {
-                return NotFound();
-            }
+            if (id != khoaHoc.MaKhoaHoc) return NotFound();
 
-            // ÁP DỤNG PATTERN AN TOÀN: Tải bản ghi gốc từ DB
             var khoaHocToUpdate = await _context.KhoaHocs.FindAsync(id);
-            if (khoaHocToUpdate == null)
-            {
-                return NotFound();
-            }
+            if (khoaHocToUpdate == null) return NotFound();
+
+            // Xóa validation cho các property navigation và cột string MonHoc cũ
+            ModelState.Remove(nameof(KhoaHoc.MaGiaoVienNavigation));
+            ModelState.Remove(nameof(KhoaHoc.MaMonHocNavigation));
+            ModelState.Remove("MonHoc");
 
             if (ModelState.IsValid)
             {
-                // Xử lý upload ảnh mới (nếu có)
+                // 1. Cập nhật ảnh nếu có file mới
                 if (AnhKhoaHoc != null && AnhKhoaHoc.Length > 0)
                 {
-
                     var imageUrl = await _cloudinaryService.UploadImageAsync(AnhKhoaHoc);
-                    khoaHocToUpdate.DuongDanAnhKhoaHoc = imageUrl; // Chỉ cập nhật đường dẫn ảnh
+                    khoaHocToUpdate.DuongDanAnhKhoaHoc = imageUrl;
                 }
 
-                // Cập nhật các thuộc tính từ form vào bản ghi đã tải từ DB
-                khoaHocToUpdate.MonHoc = khoaHoc.MonHoc;
+                // 2. Cập nhật thông tin từ form
+                khoaHocToUpdate.MaMonHoc = khoaHoc.MaMonHoc;
                 khoaHocToUpdate.TieuDe = khoaHoc.TieuDe;
                 khoaHocToUpdate.MoTa = khoaHoc.MoTa;
                 khoaHocToUpdate.GiaKhoaHoc = khoaHoc.GiaKhoaHoc;
                 khoaHocToUpdate.ThoiHan = khoaHoc.ThoiHan;
                 khoaHocToUpdate.MaGiaoVien = khoaHoc.MaGiaoVien;
-
-                // Tự động cập nhật ngày giờ, không để người dùng sửa
                 khoaHocToUpdate.NgayCapNhat = DateTime.Now;
+
+                // 3. Đồng bộ tên môn học vào cột 'MonHoc' (nếu database yêu cầu)
+                var mh = await _context.MonHocs.FindAsync(khoaHoc.MaMonHoc);
+                if (mh != null) khoaHocToUpdate.MonHoc = mh.TenMonHoc;
 
                 try
                 {
-                    _context.Update(khoaHocToUpdate); // Cập nhật bản ghi đã được chỉnh sửa
+                    _context.Update(khoaHocToUpdate);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!KhoaHocExists(khoaHoc.MaKhoaHoc))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    if (!KhoaHocExists(khoaHoc.MaKhoaHoc)) return NotFound();
+                    else throw;
                 }
-                return RedirectToAction(nameof(Index));
             }
 
-            // Nếu ModelState không hợp lệ, tải lại SelectList và trả về View
+            // Nếu lỗi, load lại dữ liệu cho Dropdown
+            ViewData["MaMonHoc"] = new SelectList(_context.MonHocs, "MaMonHoc", "TenMonHoc", khoaHoc.MaMonHoc);
             ViewData["MaGiaoVien"] = new SelectList(_context.GiaoViens, "MaGiaoVien", "HoTen", khoaHoc.MaGiaoVien);
-            return View(khoaHocToUpdate); // Trả về đối tượng đã được cập nhật một phần
+            return View(khoaHocToUpdate);
         }
 
 

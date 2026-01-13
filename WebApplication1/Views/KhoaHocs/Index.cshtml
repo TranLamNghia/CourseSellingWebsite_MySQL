@@ -372,6 +372,54 @@
         .btn-outline:hover {
             background-color: #f1f1f1;
         }
+
+    /* Tùy chỉnh cụm nút sắp xếp */
+    /* Container bọc ngoài cụm sắp xếp */
+    .sort-wrapper {
+        display: flex;
+        align-items: center;
+        background: #f1f5f9; /* Màu nền nhẹ */
+        padding: 4px;
+        border-radius: 10px;
+        border: 1px solid #e2e8f0;
+    }
+
+    .sort-label {
+        font-size: 0.8rem;
+        font-weight: 700;
+        color: #475569;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin: 0 12px;
+    }
+
+    .btn-sort {
+        padding: 6px 16px;
+        font-size: 0.875rem;
+        color: #64748b;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-weight: 500;
+    }
+
+        .btn-sort:hover {
+            color: #2563eb;
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-sort.active {
+            background: white;
+            color: #2563eb;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        .btn-sort i {
+            font-size: 0.75rem;
+        }
 </style>
 
 <div class="course-management">
@@ -423,74 +471,69 @@
                 <span class="text-muted">Hiển thị @Model.Count() khóa học</span>
                 <div class="vr"></div>
                 <div class="sort-controls">
-                    <span class="sort-label">Sắp xếp theo:</span>
+                    <div class="sort-wrapper">
+                        <span class="sort-label">Sắp xếp:</span>
 
-                    @{
-                        var currentSort = ViewData["CurrentSort"] as string;
-                    }
+                        @{
+                            var currentSort = ViewData["CurrentSort"] as string;
+                            var search = ViewData["CurrentFilter"];
+                            var teacher = ViewData["TeacherFilter"];
+                        }
 
-                    <a asp-action="Index"
-                       asp-route-sortOrder="@ViewData["NameSortParm"]"
-                       asp-route-searchString="@ViewData["CurrentFilter"]"
-                       asp-route-teacherName="@ViewData["TeacherFilter"]"
-                       class="btn-sort @(currentSort == "name_asc" || currentSort == "name_desc" || currentSort == null ? "active" : "")">
-                        Tên
-                        @if (currentSort == "name_desc")
-                        {
-                            <i class="fas fa-arrow-down"></i>
-                        }
-                        else
-                        {
-                            <i class="fas fa-arrow-up"></i>
-                        }
-                    </a>
+                        <a asp-action="Index"
+                           asp-route-sortOrder="@ViewData["NameSortParm"]"
+                           asp-route-searchString="@search"
+                           asp-route-teacherName="@teacher"
+                           class="btn-sort @(string.IsNullOrEmpty(currentSort) || currentSort.Contains("name") ? "active" : "")">
+                            <i class="fas fa-font"></i>
+                            Tên
+                            @if (currentSort == "name_desc")
+                            {
+                                <i class="fas fa-chevron-down"></i>
+                            }
+                            else
+                            {
 
-                    <a asp-action="Index"
-                       asp-route-sortOrder="@ViewData["PriceSortParm"]"
-                       asp-route-searchString="@ViewData["CurrentFilter"]"
-                       asp-route-teacherName="@ViewData["TeacherFilter"]"
-                       class="btn-sort @(currentSort == "price_asc" || currentSort == "price_desc" ? "active" : "")">
-                        Giá
-                        @if (currentSort == "price_desc")
-                        {
-                            <i class="fas fa-arrow-down"></i>
-                        }
-                        else
-                        {
-                            <i class="fas fa-arrow-up"></i>
-                        }
-                    </a>
+                                <i class="fas fa-chevron-up"></i>
+                            }
+                        </a>
 
-                    <a asp-action="Index"
-                       asp-route-sortOrder="@ViewData["DateSortParm"]"
-                       asp-route-searchString="@ViewData["CurrentFilter"]"
-                       asp-route-teacherName="@ViewData["TeacherFilter"]"
-                       class="btn-sort @(currentSort == "date_asc" || currentSort == "date_desc" ? "active" : "")">
-                        Ngày cập nhật
-                        @if (currentSort == "date_desc")
-                        {
-                            <i class="fas fa-arrow-down"></i>
-                        }
-                        else
-                        {
-                            <i class="fas fa-arrow-up"></i>
-                        }
-                    </a>
-                    <a asp-action="Index"
-                       asp-route-sortOrder="@ViewData["DateSortParm"]"
-                       asp-route-searchString="@ViewData["CurrentFilter"]"
-                       asp-route-teacherName="@ViewData["TeacherFilter"]"
-                       class="btn-sort @(currentSort == "teacher_asc" || currentSort == "teacher_desc" ? "active" : "")">
-                        Theo giao vien
-                        @if (currentSort == "teacher_desc")
-                        {
-                            <i class="fas fa-arrow-down"></i>
-                        }
-                        else
-                        {
-                            <i class="fas fa-arrow-up"></i>
-                        }
-                    </a>
+                        <a asp-action="Index"
+                           asp-route-sortOrder="@ViewData["PriceSortParm"]"
+                           asp-route-searchString="@search"
+                           asp-route-teacherName="@teacher"
+                           class="btn-sort @(currentSort?.Contains("price") == true ? "active" : "")">
+                            <i class="fas fa-tag"></i>
+                            Giá
+                            @if (currentSort == "price_desc")
+                            {
+                                <i class="fas fa-chevron-down"></i>
+                            }
+                            else
+                            {
+
+                                <i class="fas fa-chevron-up"></i>
+                            }
+                        </a>
+
+                        <a asp-action="Index"
+                           asp-route-sortOrder="@ViewData["DateSortParm"]"
+                           asp-route-searchString="@search"
+                           asp-route-teacherName="@teacher"
+                           class="btn-sort @(currentSort?.Contains("date") == true ? "active" : "")">
+                            <i class="fas fa-calendar-alt"></i>
+                            Mới nhất
+                            @if (currentSort == "date_desc")
+                            {
+                                <i class="fas fa-chevron-down"></i>
+                            }
+                            else
+                            {
+
+                                <i class="fas fa-chevron-up"></i>
+                            }
+                        </a>
+                    </div>
                 </div>
             </div>
 

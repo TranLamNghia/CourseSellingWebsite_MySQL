@@ -1,5 +1,32 @@
 ﻿@model WebApplication1.ViewModel.RegisterVM
 
+<style>
+
+    .user-type-toggle {
+        display: flex;
+        justify-content: center;
+    }
+
+    .toggle-container {
+        width: auto; 
+        min-width: 180px;
+    }
+
+    .toggle-slider {
+        width: 100%; 
+        left: 0;
+        transform: none;
+    }
+
+    .toggle-label {
+        width: 100%;
+        justify-content: center; 
+        color: white !important;
+    }
+
+
+</style>
+
 <main class="auth-page">
     <div class="auth-container">
         <div class="auth-card">
@@ -11,16 +38,16 @@
             <div class="user-type-toggle">
                 <div class="toggle-container">                    
                     <input type="radio" id="student" name="userTypeRadio" value="student" checked>
-                    <input type="radio" id="admin" name="userTypeRadio" value="admin">
+                    @* <input type="radio" id="admin" name="userTypeRadio" value="admin"> *@
                     <div class="toggle-slider"></div>
                     <label for="student" class="toggle-label">
                         <i class="fas fa-user-graduate"></i>
                         <span>Học Sinh</span>
                     </label>
-                    <label for="admin" class="toggle-label">
+                    @* <label for="admin" class="toggle-label">
                         <i class="fas fa-user-shield"></i>
                         <span>Admin</span>
-                    </label>
+                    </label> *@
                 </div>
             </div>
 

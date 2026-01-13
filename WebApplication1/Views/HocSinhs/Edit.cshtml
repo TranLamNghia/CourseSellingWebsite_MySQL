@@ -199,7 +199,7 @@
 
             <div class="avatar-upload-section">
                 <img id="imgPreview"
-                     src="@(string.IsNullOrEmpty(Model.DuongDanAnhDaiDien) ? "/images/default-avatar.png" : Model.DuongDanAnhDaiDien)"
+                     src="@(string.IsNullOrEmpty(Model.DuongDanAnhDaiDien) ? "/Image/default-avatar.png" : Model.DuongDanAnhDaiDien)"
                      class="current-avatar mb-3" alt="Avatar" />
                 <div class="small text-muted mb-2">Cập nhật ảnh đại diện:</div>
                 <input type="file" name="AnhDaiDien" class="form-control" accept="image/*" onchange="previewImage(this);" />

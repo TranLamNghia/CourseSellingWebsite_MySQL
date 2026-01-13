@@ -42,21 +42,35 @@ namespace WebApplication1.Controllers
         // POST: GiaoViens/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaGiaoVien,HoTen,Email,DienThoai,GioiThieu,NgayTao")] GiaoVien giaoVien, IFormFile AnhDaiDien)
+        public async Task<IActionResult> Create([Bind("HoTen,Email,DienThoai,GioiThieu")] GiaoVien giaoVien, IFormFile? AnhDaiDien)
         {
-
             if (AnhDaiDien != null)
             {
                 var imageUrl = _cloudinaryService.UploadImage(AnhDaiDien);
                 giaoVien.DuongDanAnhDaiDien = imageUrl;
             }
 
+            giaoVien.NgayTao = DateTime.Now;
+
+            giaoVien.MaGiaoVien = "TEMP";
+
+            ModelState.Remove("MaGiaoVien");
+            ModelState.Remove(nameof(GiaoVien.KhoaHocs)); 
+
             if (ModelState.IsValid)
             {
-                _context.Add(giaoVien);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    _context.Add(giaoVien);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                catch (Exception ex)
+                {
+                    ModelState.AddModelError("", "Lỗi lưu Database: " + ex.Message);
+                }
             }
+
             return View(giaoVien);
         }
 

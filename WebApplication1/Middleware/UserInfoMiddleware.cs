@@ -28,7 +28,7 @@ namespace WebApplication1.Areas.Student.Middleware
                         {
                             UserName = hocSinh.HoTen ?? hocSinh.DienThoai,
                             Email = hocSinh.Email ?? "Không có email",
-                            AvatarUrl = hocSinh.DuongDanAnhDaiDien ?? "/images/default-avatar.png",
+                            AvatarUrl = hocSinh.DuongDanAnhDaiDien ?? "/Image/default-avatar.png",
                             Role = "Student"
                         };
                         context.Items["UserInfo"] = userInfo;
